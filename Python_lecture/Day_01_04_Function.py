@@ -36,12 +36,13 @@ print(a)
 print(f_3())
 
 # 매개변수 있고, 반환값 있고
+# 2자리 양수를 거꾸로 뒤집는 함수를 만드세요.
 
-def f_4():
-    print()
-    return
 
-f_4()
+def f_4(n):
+    return n%10*10 + n//10
+print(f_4(35))
+
 
 # 2자리 정수를 거꾸로 뒤집는 함수로 만드세요.
 a = 24
@@ -55,22 +56,41 @@ def f_5(n):
 print(f_5(37))
 print(f_5(82))
 
+# 문제
+# 2개의 정수 중에서 큰 숫자를 찾는 함수를 찾으세요.
+# return 키워드 여러번 사용 가능.
 
-def f_6(a, b):
-    if a>=b:
-        return a
-    else:
-        return b
+def max2(a, b):
+    # if a >= b:
+    #     return a    # return 여기서 함수를 끝내는 의미
+    # else:
+    #     return b
+
+    # if a >= b:
+    #     return a
+    # return b
+
+    if a >= b:
+        b = a
+    return b
+
+
+print(max2(9, 7))
+print(max2(7, 9))
+
+# 4개의 정수 중에서 큰 숫자를 찾는 함수를 만드세요.
+# 힌트 : 복면가왕
+
+def max4(a, b, c, d):
+    # return max2(max2(a, b), max2(c, d))
+    return max2(max2(max2(a,b),c),d)
 
 
 
-
-
-
-
-
-
-
+print(max4(1, 2, 3, 4))
+print(max4(2, 3, 4, 1))
+print(max4(3, 4, 1, 2))
+print(max4(4, 1, 2, 3))
 
 
 
