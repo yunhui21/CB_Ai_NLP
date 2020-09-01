@@ -88,7 +88,13 @@ def rnn2_2():
 
     print(outputs.shape)  # (1, 5, 2)
 
-    z = outputs[0]
+    w = tf.Variable(tf.random.uniform([hidden_size, 6]))
+    b = tf.Variable(tf.random.uniform([6]))  # bias
+
+    # (5, 6) = (5, 2) @ (2, 6)
+    # 2차원의 확장
+    z = tf.matmul(outputs[0], w) + b
+    hx = tf.nn.softmax(z)  # (5,6)
 
     loss_i = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=z)
     loss = tf.reduce_mean(loss_i)
@@ -105,10 +111,12 @@ def rnn2_2():
         preds = sess.run(z)
         preds_arg = np.argmax(preds, axis=1)
         print(i, c, preds_arg)
+    print(preds_arg == y)
+    print('acc:', np.mean(preds_arg == y))
     sess.close()
     # 99 0.7226122 [0 1 4 2 3]
     # http://210.125.150.125/NL/ 자료 확인
 
 # rnn2_1()
-
+rnn2_2()
 

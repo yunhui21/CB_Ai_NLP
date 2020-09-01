@@ -5,6 +5,7 @@ import csv
 import nltk
 import gensim
 import numpy as np
+import collections
 import re
 import matplotlib.pyplot as plt
 
@@ -38,7 +39,7 @@ def get_data(file_path):
     documents, labels =[], []
     for row in csv.reader(f, delimiter='\t'):
         # print(row)
-        # print(row[1], clean_strd((row[1])))
+        # print(row[1], clean_str((row[1])))
 
         documents.append(clean_str(row[1]).split())
         labels.append(int(row[2]))
@@ -53,7 +54,6 @@ def clean_str(string, TREC=False):
     Tokenization/string cleaning for all datasets except for SST.
     Every dataset is lower cased except for TREC
     """
-
     string = re.sub(r"[^가-힣A-Za-z0-9(),!?\'\`]", " ", string)
     string = re.sub(r"\'s", " \'s",   string)
     string = re.sub(r"\'ve", " \'ve", string)
@@ -85,7 +85,7 @@ def make_same_length(documents, max_size):
     docs = []
     for words in documents:
         if len(words) < max_size:
-            docs.append(words + [''] * (max_size -len(words)))
+            docs.append(words + ['']*(max_size - len(words)))
         else:
             docs.append(words[:max_size])
 
@@ -109,15 +109,15 @@ def make_feature(words, vocab):
 
 
 def make_feature_data(documents, labels, vocab):
-    return [(make_feature(words, vocab), label) for words, label in zip(documents, labels)]
-    # features = [make_feature(words, vocab) for words in documents]
-    # return [(feat, ibl) for feat, ibl in zip(features, labels)]
+    # return [(make_feature(words, vocab), label) for words, label in zip(documents, labels)]
+    features = [make_feature(words, vocab) for words in documents]
+    return [(feat, ibl) for feat, ibl in zip(features, labels)]
 
 x_train, y_train = get_data('data/naver_ratings_train.txt')
 x_test, y_test = get_data('data/naver_ratings_test.txt')
 
 # show_word_counts(x_train)
-# 대략40개의 단어만을 사용해도 포함한다.
+#
 vocab = make_vocab(x_train, vocab_size=2000)
 
 x_train = make_same_length(x_train, max_size=25)
@@ -127,9 +127,7 @@ train_set = make_feature_data(x_train, y_train, vocab)
 test_set = make_feature_data(x_test, y_test, vocab)
 
 clf = nltk.NaiveBayesClassifier.train(train_set)
-print(nltk.classify.accuracy(clf, test_set))
-
-
+print(nltk.classify.accuracy(clf, train_set))
 
 
 
