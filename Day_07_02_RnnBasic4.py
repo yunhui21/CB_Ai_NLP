@@ -69,7 +69,7 @@ def make_data_2(origin):
     return np.float32([xx]), tf.constant(np.int32([y])), np.array(idx2chr)
 
 def make_data_3(origin):
-    lb = preprocessing.label_binarize()
+    lb = preprocessing.LabelBinarizer()
     word = lb.fit_transform(list(origin))
     # print(word)
 
@@ -80,7 +80,7 @@ def make_data_3(origin):
     
     return np.float32([x]), tf.constant(np.int32([y])), lb.classes_
 
-def rnn4(word, n_iteration ):
+def rnn4(word, n_iteration=100 ):
     x, y, vocab = make_data_3(word)
 
     batch_size, seq_length, n_classes = x.shape
