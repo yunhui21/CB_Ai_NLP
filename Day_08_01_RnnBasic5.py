@@ -12,10 +12,17 @@ from sklearn import preprocessing
 # 문제
 # 길이가 다른 문자열에 대해 동작하도록 수정하세요.
 # (원래 길이가 5였다면 3글자 전달)
-#
 
+# ValueError: Cannot feed value of shape (1, 3, 6) for Tensor 'Placeholder:0', which has shape '(?, 5, 6)'
+# 들어오는 입력갑의 shape을 수정해주면 될까? ph_x: flaceholder의 값에서 수정.
+# 글자수를 무조건 맞춰준다.
 
 def make_data(word_train, word_test):
+
+    word_test += ' '*(5-len(word_test))     #padding 추가 : 학습에 사용하지 않는 임의의 글자를 추가하도록.
+    if len(word_test) > 5:
+        word_test = word_test[:5]
+
     lb = preprocessing.LabelBinarizer()
     word = lb.fit_transform(list(word_train))
 
@@ -56,11 +63,15 @@ def rnn5(word_train, word_test, n_iteration=100):
     sess.run(tf.global_variables_initializer())
 
     for i in range(n_iteration):
+
         sess.run(train, {ph_x: x})
         c = sess.run(loss, {ph_x:x})
+
         preds = sess.run(z, {ph_x:x_test})
         preds_arg = np.argmax(preds, axis=2)
         preds_arg = preds_arg.reshape(-1)
+        # 더 긴 문자열이 들어온다면, 직접 처리해봅니다.
+        preds_arg = preds_arg[:len(word_test)]
         print(i, c, preds_arg, ''.join(vocab[preds_arg]))
 
     sess.close()
