@@ -140,8 +140,5 @@ def rnn_mnist_minibatch():
     print('acc:', np.mean(preds_arg == y_test))
     sess.close()
 
-
 rnn_mnist_minibatch()
-# tensor
-# en
 
