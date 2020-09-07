@@ -2,6 +2,7 @@
 
 import tensorflow as tf
 import csv
+import numpy as np
 
 #  문제
 # 속도가 30과 50일대의 제동 거리를 구하세요.
@@ -68,21 +69,28 @@ def linear_cars():
 
     model.summary()  # wx + b : trainable params w = 2개
 
-def multifule_trees():
+def multiple_trees():
     x, y = [], []
     f = open('data/trees.csv', 'r', encoding='utf-8')
     f.readline()
 
     for row in csv.reader(f):
         # print(row)
-        x.append(int(row[1]))
-        y.append(int(row[3]))
+        x.append([float(row[1]), float(row[2])])
+        y.append(float(row[-1]))
     f.close()
+
+    # y = np.reshape(-1, 1) #error
+    y = np.reshape(y, [-1, 1])
+    x = np.float32(x)
+
+    print(np.array(x).shape)
+    print(np.array(y).shape)
 #-----------------------------------------------------#
 
     # 모델을 만드는 첫번째 방식
     model = tf.keras.Sequential()  # 세션을 구축했다.
-    model.add(tf.keras.layers.Dense(1, input_dim=1))
+    model.add(tf.keras.layers.Dense(1))
 
     model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.0001),
                   loss=tf.keras.losses.mse)
@@ -98,7 +106,7 @@ def multifule_trees():
     print(model.evaluate(x, y))
 
     # preds = model.predict(x)
-    preds = model.predict([10, 70])
+    preds = model.predict(np.float32([[10, 70],[20,80]]))
     print(preds)
 
     model.summary()  # wx + b : trainable params w = 2개
@@ -106,4 +114,4 @@ def multifule_trees():
 
 # linear_basic()
 # linear_cars()
-multifule_trees()
+multiple_trees()
