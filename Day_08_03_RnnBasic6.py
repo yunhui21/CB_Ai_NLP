@@ -11,39 +11,37 @@ from sklearn import preprocessing
 # 세번에 걸쳐 세 단어를 훈련해야 한다.
 # 하나의 커다란 vocab을 구성한다.
 
+
 def make_data(word_array):
     # text = word_array[0] + word_array[1] + word_array[2]
     text = ''.join(word_array)
 
-    lb = preprocessing.LabelBinarizer()
-    # onehot = lb.fit_transform(list(text))     #onehot은 사용하지 않는다.
-    lb.fit(list(text))
+    ib = preprocessing.LabelBinarizer()
+    ib.fit(list(text))
 
     xx, yy = [], []
-    for word in word_array:     #위의 학습결과를 개별 데이터로 반환한다.
-        origin = lb.transform(list(word))
+    for word in word_array:
+        origin = ib.transform(list(word))
 
         x = origin[:-1]
-        y = np.argmax(origin[1:], axis=1)
-        # print(x)
-        # print(y)
+        y = np.argmax(origin[1:], axis=1 )
 
         xx.append(x)
         yy.append(y)
 
-    return np.float32(xx), tf.constant(np.int32(yy)), lb.classes_
+    return np.float32(xx), tf.constant(np.int32(yy)), ib.classes_
 
 def rnn6(word_array, n_iteration=100):
     x, y, vocab = make_data(word_array)
 
-    batch_size, seq_length, n_classes = x.shape     #(3, 5. 11)
+    batch_size, seq_length, n_classes = x.shape
     hidden_size = 7
-    cell = tf.nn.rnn_cell.BasicRNNCell(num_units=hidden_size)  #
-    outputs, _states = tf.nn.dynamic_rnn(cell, x, dtype=tf.float32)
+    cell = tf.nn.rnn_cell.BasicRNNCell(num_units=hidden_size)
+    outpus, _states = tf.nn.dynamic_rnn(cell, x, dtype = tf.float32)
 
-    z = tf.layers.dense(inputs=outputs, units=n_classes, activation=None)
+    z = tf.layers.dense(inputs=outpus, units=n_classes, activation=None)
 
-    w = tf.ones([batch_size, seq_length])
+    w = tf.ones(batch_size, seq_length)
     loss = tf.contrib.seq2seq.sequence_loss(targets=y, logits=z, weights=w)
 
     optimizer = tf.train.GradientDescentOptimizer(0.1)
@@ -56,26 +54,81 @@ def rnn6(word_array, n_iteration=100):
         sess.run(train)
         c = sess.run(loss)
 
-        # print(i, c)
+        print(i, c)
 
         preds = sess.run(z)
         preds_arg = np.argmax(preds, axis=2)
-
-
-        # 문제
-        # 컴프리핸션을 사용해서 출력 결과를 예쁘게 만드세요.
         print(i, c,[''.join(vocab[p]) for p in preds_arg])
-
-        # preds_arg = preds_arg.reshape(-1)
-        # 더 긴 문자열이 들어온다면, 직접 처리해봅니다.
-        # preds_arg = preds_arg[:len(word_test)]
-        # print(i, c, preds_arg, ''.join(vocab[preds_arg]))
     sess.close()
 
+rnn6(['tensor', 'coffee', 'clouds'])
 
-# rnn5('tensor', 'tenso')
-# rnn5('tensor', 'osnet')     #softmax는 다음의 결과를 나타내고, rnn에서는 다른 기억들을 기억해서 추측
-rnn6(['tensor', 'coffee', 'cloud'])
+
+# def make_data(word_array):
+#     # text = word_array[0] + word_array[1] + word_array[2]
+#     text = ''.join(word_array)
+#
+#     lb = preprocessing.LabelBinarizer()
+#     # onehot = lb.fit_transform(list(text))     #onehot은 사용하지 않는다.
+#     lb.fit(list(text))
+#
+#     xx, yy = [], []
+#     for word in word_array:     #위의 학습결과를 개별 데이터로 반환한다.
+#         origin = lb.transform(list(word))
+#
+#         x = origin[:-1]
+#         y = np.argmax(origin[1:], axis=1)
+#         # print(x)
+#         # print(y)
+#
+#         xx.append(x)
+#         yy.append(y)
+#
+#     return np.float32(xx), tf.constant(np.int32(yy)), lb.classes_
+#
+# def rnn6(word_array, n_iteration=100):
+#     x, y, vocab = make_data(word_array)
+#
+#     batch_size, seq_length, n_classes = x.shape     #(3, 5. 11)
+#     hidden_size = 7
+#     cell = tf.nn.rnn_cell.BasicRNNCell(num_units=hidden_size)  #
+#     outputs, _states = tf.nn.dynamic_rnn(cell, x, dtype=tf.float32)
+#
+#     z = tf.layers.dense(inputs=outputs, units=n_classes, activation=None)
+#
+#     w = tf.ones([batch_size, seq_length])
+#     loss = tf.contrib.seq2seq.sequence_loss(targets=y, logits=z, weights=w)
+#
+#     optimizer = tf.train.GradientDescentOptimizer(0.1)
+#     train = optimizer.minimize(loss)
+#
+#     sess = tf.Session()
+#     sess.run(tf.global_variables_initializer())
+#
+#     for i in range(n_iteration):
+#         sess.run(train)
+#         c = sess.run(loss)
+#
+#         # print(i, c)
+#
+#         preds = sess.run(z)
+#         preds_arg = np.argmax(preds, axis=2)
+#
+#
+#         # 문제
+#         # 컴프리핸션을 사용해서 출력 결과를 예쁘게 만드세요.
+#         print(i, c,[''.join(vocab[p]) for p in preds_arg])
+#
+#         # preds_arg = preds_arg.reshape(-1)
+#         # 더 긴 문자열이 들어온다면, 직접 처리해봅니다.
+#         # preds_arg = preds_arg[:len(word_test)]
+#         # print(i, c, preds_arg, ''.join(vocab[preds_arg]))
+#     sess.close()
+#
+#
+# # rnn5('tensor', 'tenso')
+# # rnn5('tensor', 'osnet')     #softmax는 다음의 결과를 나타내고, rnn에서는 다른 기억들을 기억해서 추측
+# rnn6(['tensor', 'coffee', 'cloud'])
 
 
 
