@@ -109,7 +109,7 @@ def softmax_iris_sparse():
     iris = pd.read_csv('data/iris(150).csv', index_col=0)
     # print(iris) #[150 rows x 5 columns]
 
-    y = preprocessing.LabelBinarizer().fit_transform(iris.Species)
+    y = preprocessing.LabelEncoder().fit_transform(iris.Species)
 
     iris.drop(['Species'], axis=1, inplace=True)
 
@@ -129,7 +129,6 @@ def softmax_iris_sparse():
                   metrics=['acc'])   #
 
     model.fit(x_train, y_train, epochs = 10, verbose=2)
-
     print('acc:', model.evaluate(x_test, y_test))
 
     # preds = model.predict(x)
