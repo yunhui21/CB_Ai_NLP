@@ -80,9 +80,9 @@ def multi_layers_mnist():
 
     model = tf.keras.Sequential()
     model.add(tf.keras.layers.Dense(256, activation=tf.keras.activations.relu))
-    model.add(tf.keras.layers.Dropout(0.4))
+    model.add(tf.keras.layers.Dropout(0.1))
     model.add(tf.keras.layers.Dense(128, activation=tf.keras.activations.relu))
-    model.add(tf.keras.layers.Dropout(0.4))
+    model.add(tf.keras.layers.Dropout(0.1))
     model.add(tf.keras.layers.Dense(10, activation=tf.keras.activations.softmax))
 
 
@@ -90,7 +90,7 @@ def multi_layers_mnist():
                   loss = tf.keras.losses.sparse_categorical_crossentropy,
                   metrics=['acc'])   #
 
-    model.fit(x_train, y_train, epochs = 10, verbose=2, batch_size=100)
+    model.fit(x_train, y_train, epochs = 100, verbose=2, batch_size=100)
     print('acc:', model.evaluate(x_test, y_test))
 
 
