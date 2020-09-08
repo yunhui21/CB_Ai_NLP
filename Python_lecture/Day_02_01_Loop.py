@@ -121,5 +121,82 @@ def show100():
 90 91 92 93 94 95 96 97 98 99
 '''
 
-show100()
+# show100()
+# while문을 사용하는 경우는 for문을 사용하지 못하느경우에만.
 
+for i in range(0, 10, 1):      # 시작, 종료, 증감
+    print(i, end=' ')
+print()
+
+for i in range(0, 10):          # 시작, 종료, 증감(1)
+    print(i, end=' ')
+print()
+
+for i in range(10):             # 시작(0), 종료, 증감(1)
+    print(i, end=' ')
+print()
+
+# 문제
+# for문을 사용해서 100보다 작은 양수의 홀수와 짝수 합계를 각각 구하는 함수를 만드세요.
+# 함수 반환값은 여러개 가능합니다.
+def sumofoddEvent():
+    odd, even = 0, 0
+    # for i in range(100):
+    #     if 1%2 == 1:    odd   += i
+    #     else:           even  += i
+    # return odd, even
+
+    # 1, 99, 2
+    # 2, 99, 2
+    # for i in range(1, 100, 2):
+    #     odd  += i
+    # for i in range(2, 100, 2):
+    #     even += i
+    #
+    # return odd, even
+
+    for i in range(0, 100, 2):
+        even += i
+        odd  += i + 1
+
+    return odd, even
+
+s1, s2 = sumofoddEvent()
+print(s1, s2)
+print('-'*50)
+
+import random
+
+print(random.randrange(10))
+print(random.randrange(10, 20))
+print(random.randrange(10, 20, 2))
+
+# placeholder
+random.seed(1)
+for _ in range(5):
+    # random.seed(1)    #이곳에 오면 1다음의 숫자만 호출
+    print(random.randrange(10), end=' ')
+
+# next = 1
+# def rand():
+#     global  next
+#     next = next * 1103515245 + 12345
+#     return int((next//65536)) % 32768
+
+# 문제
+# 10개의 100보다 작은 난수 중에서 가장 큰 숫자를 찾는 함수를 만드세요.
+def maxNumber():
+    m = 0
+    # for _ in range(10):
+    #     print(random.randrange(100), end=' ')
+    #     if m < random.randrange(100):
+    #         m = random.randrange(100)
+    m = -9999999
+    for _ in range(10):
+        n = random.randrange(100)
+        print(n, end=' ')
+        if m < n:
+            m = n
+
+    return m
+print(maxNumber())
