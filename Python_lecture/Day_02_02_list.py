@@ -110,6 +110,10 @@ print(b)
 print(c)
 
 print('-'*50)
+
 print(a[0])
 print(a[-1], a[len(a)-1])
 print(a[-2], a[-len(a)])
+
+print('-'*50)
+
