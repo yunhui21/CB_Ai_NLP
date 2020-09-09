@@ -31,3 +31,14 @@ def makeRandoms():
 random.seed(19)
 b = makeRandoms()
 print(b)
+
+# a = [1, 3, 5]
+# a.append(15)    # 마지막에 새로운 값을 넣어준다.
+# print(a)
+
+# 문제
+# 리스트를 거꾸로 뒤집는 함수를 만드세요.
+# 한번에 값을 2개씩 바꾼다.
+# 처음과 마지막
+
+
