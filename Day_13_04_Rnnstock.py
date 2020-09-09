@@ -10,7 +10,6 @@ import pandas as pd
 # 문제
 #
 def lstm_stock():
-    # stock = pd.read_csv('data/stock_daily.csv')
     stock = np.loadtxt('data/stock_daily.csv', delimiter=',')
     stock = stock[::-1]
     stock = preprocessing.minmax_scale(stock)
@@ -30,18 +29,26 @@ def lstm_stock():
     x = np.float32(x)
     y = np.reshape(y, [-1, 1])
 
+    x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, train_size=0.7, shuffle=False)
+
     model = tf.keras.Sequential()
-    model.add(tf.keras.layers.LSTM(30, return_sequences=True))
-    model.add(tf.keras.layers.LSTM(30))  # 3차원을 받아야 함.
+    model.add(tf.keras.layers.LSTM(hidden_size))  # 3차원을 받아야 함.
     model.add(tf.keras.layers.Dense(1))
 
     model.compile(optimizer=tf.keras.optimizers.Adam(),
                   loss=tf.keras.losses.mse)
 
-    model.fit(x, y, epochs=10, verbose=2)
-    print(model.evaluate(x, y))
+    model.fit(x_train, y_train, epochs=10, verbose=2, batch_size=32)
+    print('mse:', model.evaluate(x_test, y_test))
 
-    preds = model.predict(x)
+    preds = model.predict(x_test)
+    preds = preds.reshape(-1)
+
+    idx = range(len(y_test))
+    plt.plot(idx, y_test, 'r', label='label')
+    plt.plot(idx, preds, 'g', label='prediction')
+    plt.legend()
+    plt.show()
 
 
 lstm_stock()
