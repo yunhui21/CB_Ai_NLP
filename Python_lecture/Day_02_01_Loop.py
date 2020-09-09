@@ -197,3 +197,9 @@ def maxNumber():
 
     return m
 print(maxNumber())
+
+s1, s2 = sumofoddEvent()
+print(s1, s2)
+
+sum = sumofoddEvent()
+print(sum)      # 튜플로 반환
