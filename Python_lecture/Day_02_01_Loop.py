@@ -179,10 +179,7 @@ for _ in range(5):
 
 # next = 1
 # def rand():
-#     global  next
-#     next = next * 1103515245 + 12345
-#     return int((next//65536)) % 32768
-
+#     global  nextDa
 # 문제
 # 10개의 100보다 작은 난수 중에서 가장 큰 숫자를 찾는 함수를 만드세요.
 def maxNumber():
@@ -200,3 +197,9 @@ def maxNumber():
 
     return m
 print(maxNumber())
+
+s1, s2 = sumofoddEvent()
+print(s1, s2)
+
+sum = sumofoddEvent()
+print(sum)      # 튜플로 반환
