@@ -80,6 +80,33 @@ naver_juga = 751000
 total = daum_juga*100 + naver_juga*20
 print(total)
 
+print('-'*50)
+#연습문제
+# 문제2-1
+daum_juga  = 89000
+naver_juga = 751000
+my_jusik = daum_juga*100 + naver_juga*20
+print(my_jusik) #23920000
+
+# 문제 2-2
+down = my_jusik-(daum_juga*0.05 + naver_juga*0.1)
+print(down) #23840450.0
+
+# 문제 2-3
+f = 50
+c = (f-32)/1.8
+print(c)    # 10
+
+# 문제 2-4
+print('pizza'*10)    #pizzapizzapizzapizzapizzapizzapizzapizzapizzapizza
+
+# 문제 2-5
+
+naver_juga = 1000000
+hahan =
+
+# 문제 2-6
+
 
 
 
