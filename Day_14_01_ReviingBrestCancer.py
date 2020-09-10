@@ -89,6 +89,7 @@ def show_accuracy(preds, labels):
 
     print('acc :', np.mean(bools == y_bools))
 
+# model_breast_cancer_missing
 
 def model_breast_cancer_missing_softmax(x_train, x_test, y_train, y_test):
     model = tf.keras.Sequential([
@@ -110,12 +111,46 @@ def model_breast_cancer_missing_softmax(x_train, x_test, y_train, y_test):
     return preds_arg.reshape(-1,1)
 
 
+def model_breast_cancer_missing_softmax_dense(x_train, x_test, y_train, y_test):
+    # 원한벡터로 변환되지 않을 (2가지인 경우는 단운 인코딩 적용)
+    # y_train = preprocessing.LabelBinarizer().fit_transform(y_train)
+    # y_test = preprocessing.LabelBinarizer().fit_transform(y_test)
+
+    # np.eye 함수와 동일
+    onehot = np.identity(2, dtype=np.float32)
+    y_train = onehot[np.int32(y_train.reshape(-1))]
+    y_test  = onehot[np.int32(y_test.reshape(-1))]
+    print(y_train[:5])
+
+    model = tf.keras.Sequential()
+    model.add(tf.keras.layers.Dense(2, activation=tf.keras.activations.softmax))
+
+    model.compile(optimizer=tf.keras.optimizers.Adam(0.1),
+                  loss=tf.keras.losses.categorical_crossentropy,
+                  matrics=['acc'])
+    model.fit(x_train, y_train, epochs=100, batch_size=32, verbose=0)
+    # print('accd:', model.evaluate(x_test, y_test))
+
+    preds = model.predict(x_test, verbose=0)
+
+    preds_arg = np.argmax(preds, axis = 1)
+    ytest_arg = np.argmax(y_test, axis = 1)
+
+    # print(preds[:3])          #[[8.96774471e-01 1.03225484e-01]
+                                # [9.50149655e-01 4.98503409e-02]
+                                # [9.99831676e-01 1.68303188e-04]]
+    show_accuracy(preds_arg, ytest_arg)
+
+    return preds_arg.reshape(-1,1)
+
+
 x_train, x_test, y_train, y_test = get_data()
-print(x_train.dtype, y_train.dtype)
+print(x_train.dtype, y_train.dtype) # float32 float32
 
 results = np.zeros(y_test.shape)
 for i in range(7):
-    preds = model_breast_cancer_missing_softmax(x_train, x_test, y_train, y_test)
+    # preds = model_breast_cancer_missing_softmax(x_train, x_test, y_train, y_test)
+    preds = model_breast_cancer_missing_softmax_dense(x_train, x_test, y_train, y_test)
     results += preds
 
 print('-' * 30)

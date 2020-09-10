@@ -38,7 +38,7 @@ def rnn_final(long_text, n_iteration=100):
     # cell = tf.nn.rnn_cell.BasicRNNCell(num_units=hidden_size)
     # outputs, _states = tf.nn.dynamic_rnn(cell, x, dtype=tf.float32)
 
-    cell = [tf.nn.rnn_cell.BasicRNNCell(num_units=hidden_size) for _in range(2)]
+    cell = [tf.nn.rnn_cell.BasicRNNCell(num_units=hidden_size) for _ in range(2)]
     outputs, _states = tf.nn.dynamic_rnn(multi, x, dtype=tf.float32)
 
     z = tf.layers.dense(inputs=outputs, units=n_classes, activation=None)
@@ -77,7 +77,7 @@ long_text = (
     )
 #
 #
-# rnn_final(long_text, n_iteration=300)
+rnn_final(long_text, n_iteration=300)
 
 #  "If you want to build a ship, don't drum up people to collect wood"
 #   If you wan
