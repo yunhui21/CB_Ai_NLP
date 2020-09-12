@@ -34,7 +34,29 @@ def multifle_regression_1():
 
     sess.close()
 
+
 def multifle_regression_2():
+    w1 = tf.Variable(tf.random_uniform([1]))     # 60%
+    w2 = tf.Variable(tf.random_uniform([1]))
+    b  = tf.Variable(tf.random_uniform([1]))     # 40%
+
+    hx = w1 * x1 + w2 * x1 + b
+
+    # 정답까지의 거리 loss
+    loss_1 = (hx - y) ** 2
+    loss = tf.reduce_mean(loss_1)
+
+    optimizer = tf.train.GradientDescentOptimizer(0.1)
+    train = optimizer.minimize(loss)
+
+    sess = tf.Session()
+    sess.run(tf.global_variables_initializer())
+
+    for  i in range(10):
+        sess.run(train)
+        print(i, sess.run(loss))
+
+    sess.close()
 
 # multifle_regression_1()
 multifle_regression_2()
