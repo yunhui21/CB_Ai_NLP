@@ -182,12 +182,53 @@ def multiple_regression_5():
     sess.close()
 
 
+def multiple_regression_6():
+
+    # 문제
+    #traspose 전치하다.
+    x = [[1.,1.,0.],
+         [1.,2.,0.],
+         [1.,3.,0.],
+         [1.,0.,5.],
+         [1.,5.,0.]]
+    y = [[1],
+         [2],
+         [3],
+         [4],
+         [5]]  # 성적
+
+    w = tf.Variable(tf.random.uniform([3, 1]))     # 60% 2차원
+
+    ph_x = tf.placeholder(np.float32) # 함수의 매겨변수와 같은 형태
+    # (1, 5) = (5, 3)@ (3, 1)
+    hx = tf.matmul(ph_x, w)
+
+    # 정답까지의 거리 loss(5, 5) =(5, 1)@(5,1)
+    loss_1 = (hx - y) ** 2
+    loss = tf.reduce_mean(loss_1)
+
+    optimizer = tf.train.GradientDescentOptimizer(0.1)
+    train = optimizer.minimize(loss)
+
+    sess = tf.Session()
+    sess.run(tf.global_variables_initializer())
+
+    for  i in range(100):
+        sess.run(train, {ph_x: x})
+        print(i, sess.run(loss, {ph_x: x}))
+
+    print(sess.run(hx, {ph_x: x}))
+
+    print(sess.run(hx, {ph_x: [[1., 5., 5.],  #
+                               [1., 4., 2.]]}))
+    sess.close()
+
 # multiple_regression_1()
 # multiple_regression_2()
 # multiple_regression_3()
-multiple_regression_4()
+# multiple_regression_4()
 # multiple_regression_5()
-
+multiple_regression_6()
 
 # a = np.arange(5)
 # print(a)
