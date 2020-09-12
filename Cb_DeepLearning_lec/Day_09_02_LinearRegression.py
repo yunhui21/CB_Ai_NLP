@@ -6,8 +6,8 @@ import tensorflow as tf
 
 
 def linear_regression_1():
-    x = [1, 2, 3]
-    y = [1, 2, 3]
+    x = [1, 2, 3]       # 공부한 시간
+    y = [1, 2, 3]       # 성적
 
     w = tf.Variable(10.0)
     b = tf.Variable(-5.0)
@@ -54,6 +54,7 @@ def linear_regression_1():
 
 
 def linear_regression_2():
+    #
     x = [1, 2, 3]
     y = [1, 2, 3]
 
