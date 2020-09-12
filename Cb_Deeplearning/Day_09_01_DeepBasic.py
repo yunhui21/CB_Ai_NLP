@@ -9,6 +9,5 @@ def cost(x, y, w):
         hx = w * x[i]
         t += (w - y[1])**2
 
-    retun t/len(x)
+    return t/len(x)
 
-def
