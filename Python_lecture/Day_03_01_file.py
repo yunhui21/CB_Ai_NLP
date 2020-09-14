@@ -54,8 +54,27 @@ f.close()
 
 
 print('-'*50)
+lines = []
 
 with open('../data/poem.txt', 'r', encoding='utf-8') as f:
     for line in f:
-        print(line.strip())
-    # f.close() with는 무조건 close를 호출한다.
+        # print(line.strip())
+        lines.append(line.strip())
+# f.close() with는 무조건 close를 호출한다.
+
+a = 'AA,BB,CC'
+b = a.split(',')
+print(b)
+c = ''.join(b)
+print(c)
+d = ','.join(b)
+print(d)
+
+def write():
+    f = open('../data/write.txt', 'w', encoding='utf-8' )
+    f.write('hello\n')
+    f.write('python' + '\n')
+    f.write('welcome')
+    f.write('\n')
+    f.close()
+write()
