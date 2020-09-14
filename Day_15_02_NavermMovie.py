@@ -12,9 +12,6 @@ import re
 import matplotlib.pyplot as plt
 import tensorflow as tf
 
-
-
-
 # naver_ratings_test.txt, naver_ratings_test.txt
 
 def get_data(file_path):
@@ -97,8 +94,8 @@ print(x_train.shape, y_train.shape)     # (150000, 25) (150000, 1) lstm 3차원
 # tensor
 # ensor = (5,6)
 model = tf.keras.Sequential([
-            tf.keras.layers.Embedding(vocab_size, 100),
-            tf.keras.layers.LSTM(50),
+            tf.keras.layers.Embedding(vocab_size, 100), #3차원
+            tf.keras.layers.LSTM(50), #rnn을 사용..사용한 데이터는 시계열 형태이지만 그렇다고 할수는 없다. 2차원으로 변환하므로 그냥 빼면 안됨..2차원으로 3차원으로 변환해주는걸 넣어야 한다.
             tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)
         ])
 
@@ -113,13 +110,18 @@ print('acc:', model.evaluate(x_test, y_test))
 
 new_review = '지금껏 본것중에서 가장 감동적인 영화...'
 tokens = clean_str(new_review).split()
+print(tokens)
+
 x_review = tokenizer.texts_to_sequences([tokens])       #1차원 -> 2차원
 x_review = x_review[0]                                  #2차원 -> 1차원
+print(x_review)
 
 for i in range(len(x_review)):
     words = [x_review[:i+1]]
     words = tf.keras.preprocessing.sequence.pad_sequences(words, padding='post', maxlen=25)
 
+    print([tokenizer.index_word[k] for k in x_review[:i+1]])
     # print(x_review[:i+1])
-    print(tokens[:i+1])
+    # print(tokenizer.index_word[x_review[:i+1]])# index_word numpy가 되어야 한다.
+    # print(tokens[:i+1])
     print(model.predict(words, verbose=0))
