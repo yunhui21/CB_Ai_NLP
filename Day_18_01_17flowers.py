@@ -101,6 +101,7 @@ model.add(tf.keras.layers.MaxPool2D([2,2], [2,2], 'same'))
 model.add(tf.keras.layers.Flatten())
 
 model.add(tf.keras.layers.Dense(1024, tf.keras.activations.relu))
+model.add(tf.keras.layers.Dense(256, tf.keras.activations.relu))
 model.add(tf.keras.layers.Dense(n_classes, tf.keras.activations.softmax))
 
 model.summary()
