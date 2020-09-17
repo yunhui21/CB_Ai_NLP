@@ -70,45 +70,86 @@ def make_flowers_xy(dir_name):
     return np.float32(x), np.float32(y), len(set(y))
 
 
-# make_flowers_224('data/17flowers_origin', 'data/17flowers_224', img_size=[56, 56])
-# make_flowers_224('data/17flowers_origin', 'data/17flowers_224', img_size=[112, 112])
+    # make_flowers_224('data/17flowers_origin', 'data/17flowers_224', img_size=[56, 56])
+    # make_flowers_224('data/17flowers_origin', 'data/17flowers_224', img_size=[224, 224])
+def model_flowers_dense():
+    x, y, n_classes = make_flowers_xy('data/17flowers_224')
+    # print(np.min(x), np.max(x)) # 0.0 255.0
 
-x, y, n_classes = make_flowers_xy('data/17flowers_224')
-# print(np.min(x), np.max(x)) # 0.0 255.0
+    x = x/255
 
-x = x/255
+    x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, train_size=0.8)
 
-x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, train_size=0.8)
+    model = tf.keras.Sequential()
+    # model.add(tf.keras.layers.Conv2D(filters=32, kernel_size=[3,3],
+    #                                  strides=[1,1], padding='same',
+    #                                  activation= tf.keras.activations.relu,
+    #                                  input_shape=[56, 56, 1]))
 
-model = tf.keras.Sequential()
-# model.add(tf.keras.layers.Conv2D(filters=32, kernel_size=[3,3],
-#                                  strides=[1,1], padding='same',
-#                                  activation= tf.keras.activations.relu,
-#                                  input_shape=[56, 56, 1]))
+    model.add(tf.keras.layers.Conv2D(32, [3,3],[1,1],'same',activation= tf.keras.activations.relu,input_shape=x[0].shape))
+    model.add(tf.keras.layers.MaxPool2D([2,2], [2,2], 'same'))
 
-model.add(tf.keras.layers.Conv2D(32, [3,3],[1,1],'same',activation= tf.keras.activations.relu,input_shape=x[0].shape))
-model.add(tf.keras.layers.MaxPool2D([2,2], [2,2], 'same'))
+    model.add(tf.keras.layers.Conv2D(64, [3,3],[1,1],'same',activation= tf.keras.activations.relu))
+    model.add(tf.keras.layers.MaxPool2D([2,2], [2,2], 'same'))
 
-model.add(tf.keras.layers.Conv2D(64, [3,3],[1,1],'same',activation= tf.keras.activations.relu))
-model.add(tf.keras.layers.MaxPool2D([2,2], [2,2], 'same'))
+    model.add(tf.keras.layers.Conv2D(128, [3,3],[1,1],'same',activation= tf.keras.activations.relu))
+    model.add(tf.keras.layers.MaxPool2D([2,2], [2,2], 'same'))
 
-model.add(tf.keras.layers.Conv2D(128, [3,3],[1,1],'same',activation= tf.keras.activations.relu))
-model.add(tf.keras.layers.MaxPool2D([2,2], [2,2], 'same'))
+    model.add(tf.keras.layers.Conv2D(128, [3,3],[1,1],'same',activation= tf.keras.activations.relu))
+    model.add(tf.keras.layers.MaxPool2D([2,2], [2,2], 'same'))
 
-model.add(tf.keras.layers.Conv2D(128, [3,3],[1,1],'same',activation= tf.keras.activations.relu))
-model.add(tf.keras.layers.MaxPool2D([2,2], [2,2], 'same'))
+    model.add(tf.keras.layers.Flatten())
 
-model.add(tf.keras.layers.Flatten())
+    model.add(tf.keras.layers.Dense(1024, tf.keras.activations.relu))
+    model.add(tf.keras.layers.Dense(256, tf.keras.activations.relu))
+    model.add(tf.keras.layers.Dense(n_classes, tf.keras.activations.softmax))
 
-model.add(tf.keras.layers.Dense(1024, tf.keras.activations.relu))
-model.add(tf.keras.layers.Dense(256, tf.keras.activations.relu))
-model.add(tf.keras.layers.Dense(n_classes, tf.keras.activations.softmax))
+    model.summary()
+    # exit(-1)
+    model.compile(optimizer=tf.keras.optimizers.Adam(0.001),
+                  loss = tf.keras.losses.sparse_categorical_crossentropy,
+                  metrics=['acc'])
 
-model.summary()
-# exit(-1)
-model.compile(optimizer=tf.keras.optimizers.Adam(0.001),
-              loss = tf.keras.losses.sparse_categorical_crossentropy,
-              metrics=['acc'])
+    model.fit(x_train, y_train, epochs=50, batch_size= 100, verbose=2, validation_split=0.2)
+    print(model.evaluate(x_test, y_test, verbose=2))
 
-model.fit(x_train, y_train, epochs=50, batch_size= 100, verbose=2, validation_split=0.2)
-print(model.evaluate(x_test, y_test, verbose=2))
+
+def model_flowers_1x1_conv():
+    x, y, n_classes = make_flowers_xy('data/17flowers_224')
+    # print(np.min(x), np.max(x)) # 0.0 255.0
+
+    x = x / 255
+
+    x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, train_size=0.8)
+    model = tf.keras.Sequential()
+
+    model.add(tf.keras.layers.Conv2D(32, [3, 3], [1, 1], 'same', activation=tf.keras.activations.relu, input_shape=x[0].shape))
+    model.add(tf.keras.layers.MaxPool2D([2, 2], [2, 2], 'same'))
+
+    model.add(tf.keras.layers.Conv2D(64, [3, 3], [1, 1], 'same', activation=tf.keras.activations.relu))
+    model.add(tf.keras.layers.MaxPool2D([2, 2], [2, 2], 'same'))
+
+    model.add(tf.keras.layers.Conv2D(128, [3, 3], [1, 1], 'same', activation=tf.keras.activations.relu))
+    model.add(tf.keras.layers.MaxPool2D([2, 2], [2, 2], 'same'))
+
+    model.add(tf.keras.layers.Conv2D(128, [3, 3], [1, 1], 'same', activation=tf.keras.activations.relu))
+    model.add(tf.keras.layers.MaxPool2D([2, 2], [2, 2], 'same'))
+
+    model.add(tf.keras.layers.Conv2D(1024,[7,7],[1,1],'valid', activation= tf.keras.activations.relu))
+    model.add(tf.keras.layers.Conv2D(256,[1,1], [1,1], activation=tf.keras.activations.relu))
+    model.add(tf.keras.layers.Conv2D(n_classes,[1,1], [1,1], activation=None))
+    model.add(tf.keras.layers.Reshape([n_classes]))
+    model.add(tf.keras.layers.Softmax())
+
+    model.summary()
+
+    # exit(-1)
+    model.compile(optimizer=tf.keras.optimizers.Adam(0.001),
+                  loss=tf.keras.losses.sparse_categorical_crossentropy,
+                  metrics=['acc'])
+
+    model.fit(x_train, y_train, epochs=50, batch_size=100, verbose=2, validation_split=0.2)
+    print(model.evaluate(x_test, y_test, verbose=2))
+
+# model_flowers_dense()
+model_flowers_1x1_conv()
