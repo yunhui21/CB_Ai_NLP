@@ -162,21 +162,23 @@ def regression_xor_functional_3():
     output_right = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(input_right)
 
     output = tf.keras.layers.concatenate([output_left, output_right], axis=1)
-    output_bind = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(output)
 
+    output_left = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(output)
+    output_right = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(output)
 
-    model = tf.keras.Model([input_left, input_right], output_bind)
+    model = tf.keras.Model([input_left, input_right], [output_left, output_right])
 
     model.compile(optimizer=tf.keras.optimizers.Adam(0.1),
                   loss=tf.keras.losses.binary_crossentropy,
                   metrics=['acc'])  #
 
     model.fit([x1,x2], [y1,y2], epochs=1000, verbose=2)
+    print(model.evaluate([x1, x2], [y1, y2], verbose = 0))
 
-    print('acc:', model.evaluate([x1,x2], [y1,y2]))
-
-    preds = model.predict([x1,x2])
-    print(preds)
+    # print('acc:', model.evaluate([x1,x2], [y1,y2]))
+    #
+    # preds = model.predict([x1,x2])
+    # print(preds)
 
 # regression_end()
 # regression_xor()
