@@ -95,10 +95,21 @@ vgg_16_txt_conv()
 * * * * * * *
 * * * * * * *
 
-5x5 : 9
-3x3 : 25(5x5) - 수용능력을 유지할수있다.
-      3x3 = 9 - 연산량이 줄어 든다.
+7x7 : 
 
-# 1x5 : 49(7x7)
-#       5x1: 
+
+
+5x5 : 3x3(9)
+3x3 : 5x5(25)      - 수용능력을 유지할수있다.
+      3x3 = 3x3(9) - 연산량이 줄어 든다.
+
+1x5 : 7x3(21)
+      5x1: 3x3(9)
+
+** Residual learnin gbuilding block
+*+ h(x)를 얻도록 학습하는 것이 아니라 H(x)-x를 얻도록 학습 방향 변경
+** F(x) +  x에서 f(x)는 0이 되려고 한다.
+** concat 기능
+** https://curaai00.tistory.com/1 resNet:residual learning for image recognition (paper)
 '''
+
