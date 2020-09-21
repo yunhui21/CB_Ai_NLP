@@ -129,14 +129,9 @@ def generator_basic():
         print(data[0].shape, data[1].shape) # (5, 150, 150, 3) (5,)
         print(data[1])                      # [0. 1. 1. 0. 0.]
                                             # categorical
-                                            '''[[1. 0. 0. 0.]
-                                                 [0. 0. 1. 0.]
-                                                 [0. 0. 1. 0.]
-                                                 [1. 0. 0. 0.]
-                                                 [1. 0. 0. 0.]]'''
+                                            # [[1. 0. 0. 0.],[0. 0. 1. 0.],[0. 0. 1. 0.],[1. 0. 0. 0.],[1. 0. 0. 0.]]
         if i < 10:
             break
-
 
 # make_folder_structure()
 # small_dataset_0()
