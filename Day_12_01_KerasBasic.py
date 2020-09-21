@@ -27,9 +27,9 @@ def logistic_keras():
 
     model.fit(x, y, epochs = 1000, verbose=2)
 
-    print('acc:', model.evaluate((x, y)))
+    print('acc:', model.evaluate(x, y))
 
-    preds = model.predist(x)
+    preds = model.predict(x)
 
 
 def logistic_indians():
