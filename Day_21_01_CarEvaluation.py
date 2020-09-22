@@ -28,7 +28,6 @@ def get_car_dense():
 
     x = np.hstack([buying, maint, doors, persons, lug_boot, safety])
     y = eval
-
     print(x.shape, y.shape) # (1728, 21) (1728, 4)6개의 컬럼을 21개로 늘임
     return np.float32(x), y
 
@@ -98,6 +97,6 @@ def cars_evaluation_sparse():
               verbose= 2 ) # sampling개수가 모집단
     print('acc:', model.evaluate(x_test, y_test, verbose=0))
 
-
+# get_car_dense()
 # cars_evaluation_dense()
-cars_evaluation_sparse()
+# cars_evaluation_sparse()
