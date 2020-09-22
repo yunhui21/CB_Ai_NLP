@@ -4,7 +4,10 @@
 # from PIL import Image
 import os
 import shutil
+import numpy as np
 import tensorflow as tf
+import matplotlib.pyplot as plt
+
 '''
 print('a' * 3)
 print(['a'] * 3)
@@ -136,6 +139,6 @@ def generator_basic():
 # make_folder_structure()
 # small_dataset_0()
 # small_dataset_()
-generator_basic()
-
+# generator_basic()
+show_augmentation('data/dogs-vs-cats/small/test/cats/cat.1000.jpg')
 
