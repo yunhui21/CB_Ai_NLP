@@ -2,7 +2,7 @@
 import tensorflow as tf
 from sklearn import model_selection, preprocessing
 import numpy as np
-
+import matplotlib.pyplot as plt
 # 문제 1
 # and 연산에 대한 데이터를 생성해서 결과를 예측하세요.
 
@@ -119,17 +119,34 @@ def regression_xor_functional_2():
     x2 = data[:, 1:2]
     y  = data[:, 2:]
 
+    # input_left = tf.keras.Input([1])
+    # output_left = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(input_left)
+    # input_right = tf.keras.Input([1])
+    # output_right = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(input_right)
+    # output = tf.keras.layers.concatenate([output_left, output_right], axis=1)
+    # output_bind = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(output)
+
+    # 1번
+    # input_left = tf.keras.Input([1])
+    # input_right = tf.keras.Input([1])
+    # output1 = tf.keras.layers.concatenate([input_left, input_right], axis=1)
+
+    # 2번
     input_left = tf.keras.Input([1])
-    output_left = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(input_left)
+    output_left = tf.keras.layers.Dense(2, activation=tf.keras.activations.sigmoid)(input_left)
 
     input_right = tf.keras.Input([1])
-    output_right = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(input_right)
+    output_right = tf.keras.layers.Dense(2, activation=tf.keras.activations.sigmoid)(input_right)
 
-    output = tf.keras.layers.concatenate([output_left, output_right], axis=1)
-    output_bind = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(output)
+    # output1 = tf.keras.layers.concatenate([input_left, input_right], axis=1) # 1번
+    output1 = tf.keras.layers.concatenate([output_left, output_right], axis=1)
 
+    # (4, 2) @ (2, 20)
+    output2 = tf.keras.layers.Dense(20, activation=tf.keras.activations.sigmoid)(output1)
+    # (4,20) @ (20,1)
+    output3 = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(output2)
 
-    model = tf.keras.Model([input_left, input_right], output_bind)
+    model = tf.keras.Model([input_left, input_right], output3)
 
     model.compile(optimizer=tf.keras.optimizers.Adam(0.1),
                   loss=tf.keras.losses.binary_crossentropy,
@@ -152,33 +169,62 @@ def regression_xor_functional_3():
 
     x1 = data[:, :1]
     x2 = data[:, 1:2]
-    y1  = data[:, 2:3]
-    y2  = data[:, 3:]
+    y1 = data[:, 2:3]
+    y2 = data[:, 3:]
 
     input_left = tf.keras.Input([1])
-    output_left = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(input_left)
+    output_left = tf.keras.layers.Dense(2, activation=tf.keras.activations.sigmoid)(input_left)
 
     input_right = tf.keras.Input([1])
-    output_right = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(input_right)
+    output_right = tf.keras.layers.Dense(2, activation=tf.keras.activations.sigmoid)(input_right)
 
     output = tf.keras.layers.concatenate([output_left, output_right], axis=1)
 
-    output_left = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(output)
-    output_right = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(output)
+    output_left_1 = tf.keras.layers.Dense(2, activation=tf.keras.activations.sigmoid)(output)
+    output_left_2 = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(output_left_1)
 
-    model = tf.keras.Model([input_left, input_right], [output_left, output_right])
+    output_right_1 = tf.keras.layers.Dense(2, activation=tf.keras.activations.sigmoid)(output)
+    output_right_2 = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(output_right_1)
+
+
+    model = tf.keras.Model([input_left, input_right], [output_left_2, output_right_2])
 
     model.compile(optimizer=tf.keras.optimizers.Adam(0.1),
                   loss=tf.keras.losses.binary_crossentropy,
                   metrics=['acc'])  #
 
-    model.fit([x1,x2], [y1,y2], epochs=1000, verbose=2)
+    history = model.fit([x1,x2], [y1,y2], epochs=1000, verbose=2)
     print(model.evaluate([x1, x2], [y1, y2], verbose = 0))
+    #[0.34689265489578247, 0.34670398, 0.00018867044, 0.75, 1.0]
 
+    # print(model.predict([x1, x2]))
+    # print(history.history)
     # print('acc:', model.evaluate([x1,x2], [y1,y2]))
     #
     # preds = model.predict([x1,x2])
     # print(preds)
+    # model.summary()
+    print(history.history.keys())#['loss', 'dense_3_loss', 'dense_5_loss', 'dense_3_acc', 'dense_5_acc']
+
+    # 문제
+    # history 시각화해주세요.(loss, accuracy)
+
+    epochs = np.arange(1000) + 1
+
+    plt.subplot(1,2,1)
+    plt.plot(epochs, history.history['dense_3_loss'], 'r', label='xor')
+    plt.plot(epochs, history.history['dense_5_loss'], 'b', label ='and')
+    plt.title('loss')
+    plt.legend()
+    plt.show()
+
+    plt.subplot(1,2,2)
+    plt.plot(epochs, history.history['dense_3_acc'], 'r', label='xor')
+    plt.plot(epochs, history.history['dense_5_acc'], 'b', label ='and')
+    plt.title('accuracy')
+    plt.legend()
+    plt.show()
+
 
 # regression_end()
 # regression_xor()
