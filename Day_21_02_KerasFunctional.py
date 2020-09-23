@@ -91,10 +91,10 @@ def regression_xor_functional_1():
     # model = tf.keras.Model(input, output2)
 
     # 3번
-    input = tf.keras.Input([2])
+    input   = tf.keras.Input([2])
     output1 = tf.keras.layers.Dense(2, activation=tf.keras.activations.sigmoid)(input)
     output2 = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)(output1)
-    model = tf.keras.Model(input, output2)
+    model   = tf.keras.Model(input, output2)
 
     model.compile(optimizer=tf.keras.optimizers.Adam(0.1),
                   loss=tf.keras.losses.binary_crossentropy,

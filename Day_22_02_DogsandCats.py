@@ -77,6 +77,22 @@ def load_model(version):
     model = tf.keras.models.load_model(get_model_name(version))
     model.summary()
 
+    test_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1/255)
+
+    test_flow = test_gen.flow_from_directory('data/dogs-vs-cats/small/test',
+                                              target_size=[150, 150],
+                                              batch_size=1000,
+                                              class_mode='binary')
+
+    x, y = test_flow.next()
+    print(x.shape, y.shape)
+    print('acc:', model.evaluate(x, y, verbose = 0))
+
+    # x, y = test_flow.next()
+    # print(x.shape, y.shape)
+    # print('acc:', model.evaluate(x, y, verbose = 0))
+
+
 def model_1():
     model = tf.keras.Sequential()
     model.add(tf.keras.layers.Input([150,150,3]))
@@ -179,7 +195,11 @@ def model_3():
             n1 = i1 + batch_size
             n2 = n1 + batch_size
 
+
             if n2 > sample_count:
+                # remainder = sample_count - n1
+                # x[n1:] = conv_base.predict(xx[:remainder])
+                # y[n1:] = yy[:remainder]
                 break
 
             x[n1:n2] = conv_base.predict(xx)
@@ -196,7 +216,7 @@ def model_3():
 
     x_train, y_train = extract_feature(conv_base, data_gen, 'data/dogs-vs-cats/small/train', 2000, batch_size)
     x_valid, y_valid = extract_feature(conv_base, data_gen, 'data/dogs-vs-cats/small/valid', 1000, batch_size)
-    # x_test,  y_test  = extract_feature(conv_base, data_gen, 'data/dogs-vs-cats/small/test'  , 1000, batch_size)
+    x_test,  y_test  = extract_feature(conv_base, data_gen, 'data/dogs-vs-cats/small/test'  , 1000, batch_size)
 
 
     model = tf.keras.Sequential()
@@ -209,11 +229,12 @@ def model_3():
                   metrics=['acc'])
 
     history = model.fit(x_train, y_train,
-                        steps_per_epoch=2000 // batch_size,  # train data 개수
+                        Batch_size = batch_size,  # train data 개수
                         epochs=10,
                         validation_data= [x_valid, y_valid],
                         verbose=2)
     # model.save(get_model_name(3)) # 저장해서 로딩할수없다.
+    model.evaluate(x_test, y_test, verbose=0)
     save_history(history, 3)
 
 # 기본모델 * 이미지 증식 * 사전학습
@@ -269,14 +290,22 @@ def model_4():
 
 start = time.time()
 
+
+# load_model(1)
+
 # model_1()
 # model_2()
 # model_3()
-model_4()
+# model_4()
 print('소요시간: {:.2f}초'.format(time.time() - start))
 
 # load_history(1)
-# # load_model(1)
+# load_model(1)
+# load_model(2)
+# load_model(3) #모델이 다름: 피쳐를 뽑아내는 코드를 태운경우이므로 같이 이해하면 안됨.
+# load_model(4)
 # model.save(get_model_name(2))
 # save_history(history,2)
 
+# r = range(5)
+# print(r.next(r))

@@ -34,6 +34,7 @@ def get_data(seq_length):
 
     return x, y, lb.classes_
 
+
 def show_sampling(sample_func):
     seq_length = 60
     x, y, vocab = get_data(seq_length)
@@ -104,6 +105,7 @@ def new_fashion(model, vocab, seq_length, y, sample_func, temperatture=0.0):
         indices[:-1] = indices[1:]
         indices[-1] = t
     print()
+
 
 def weighted_pick(preds):
     t = np.cumsum(preds)        # 누적 합계 softmax 전체합계 1이므로 마지막 값은 1일 나오야 한다.
