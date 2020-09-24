@@ -21,7 +21,7 @@ def clean_str(string):
 
 def get_data():
     f = open('data/chosun.txt', 'r', encoding='utf-8')
-    long_text = f.read(1000000)
+    long_text = f.read(100)
     long_text = clean_str(long_text)
     f.close()
 
@@ -55,18 +55,18 @@ def act_like_writer(sent, model, word2idx, idx2word, seq_length = 25):
         output_arg = np.argmax[0]
         current.append(idx2word[output_arg])
         # print(output_arg)
-    print(current)
+    # print(current)
 
 
 tokens, vocab = get_data()
-print(vocab)
+# print(vocab)
 
 word2idx = {w:i for i, w in enumerate(vocab)}
 idx2word = np.array(vocab)
 
 tokens_idx = [word2idx for w in tokens]
-print(tokens[:5])
-print(tokens_idx[:5])
+# print(tokens[:5])
+# print(tokens_idx[:5])
 
 sent_slices = tf.data.Dataset.from_tensor_slices(tokens_idx)
 print(sent_slices)
@@ -92,7 +92,7 @@ for xx, yy in sent_map.take(2):
     print(xx.numpy(), yy.numpy())
 print()
 
-sent_shuffle = sent_map.shufflee(buffer_size = 10000)
+sent_shuffle = sent_map.shuffle(buffer_size = 10000)
 
 for xx, yy in sent_shuffle.take(2):
     print(xx.numpy(), yy.numpy())
