@@ -15,7 +15,7 @@ def model_baseline(popcorn, n_samples= -1):
     x = popcorn.review
     # y = popcorn.sentiment.reshape(-1,1) # error
     # y = np.reshape(popcorn.sentiment,[-1,1]) #error
-    y = popcorn.sentiment.values.reshape(-1,1) #error
+    y = popcorn.sentiment.values.reshape(-1, 1) #good
 
     # sampling
     if n_samples > 0:
@@ -39,8 +39,9 @@ def model_baseline(popcorn, n_samples= -1):
     seq_length = 200
     x = tf.keras.preprocessing.sequence.pad_sequences(x, padding='post', maxlen=seq_length)
     # print(x.shape, y.shape) # (1000, 25) (1000, 1)
-    data = model_selection.train_test_split(x,y, train_size=0.8, test_size=0.2, shuffle=False)
-    x_train, y_train, x_test, y_test = data
+
+    data = model_selection.train_test_split(x, y, train_size=0.8, test_size=0.2, shuffle=False)
+    x_train, x_test, y_train, y_test = data
 
     model = tf.keras.Sequential([
                 tf.keras.layers.Embedding(vocab_size, 200),
@@ -49,9 +50,11 @@ def model_baseline(popcorn, n_samples= -1):
             ])
 
     model.compile(optimizer=tf.keras.optimizers.Adam(0.01),
-                  loss=tf.keras.losses.binary_crossentropy)
+                  loss=tf.keras.losses.binary_crossentropy,
+                  metrics=['acc'])
+
     model.fit(x_train, y_train, epochs=5,  batch_size=128, verbose=2)
-    print('acc:', model.evaluate(x_test, y_test))
+    # print('acc:', model.evaluate(x_test, y_test))
 
 
 def model_tfidf(popcorn, n_samples= -1):
@@ -82,9 +85,9 @@ def model_tfidf(popcorn, n_samples= -1):
     x = tfidf.fit_transform(x)
 
     data = model_selection.train_test_split(x,y, train_size=0.8, test_size=0.2, shuffle=False)
-    x_train, y_train, x_test, y_test = data
+    x_train, x_test, y_train, y_test = data
 
-    lr = linear_model.logistic_regression_path(class_weight='balanced')
+    lr = linear_model.LogisticRegression(class_weight='balanced')
     lr.fit(x_train, y_train)
     print('acc:', lr.score(x_test, y_test))
 
