@@ -55,7 +55,7 @@ print(set_slices)
 seq_length = 25
 sent_batchsize = set_slices.batch(seq_length + 1, drop_remainder=True)
 
-for 0 in sent_batchsize.take(2):
+for s in sent_batchsize.take(2):
     print(s.numpy())
 # clean_str()
 # get_data()
