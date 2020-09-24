@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 import pandas as pd
 from sklearn import preprocessing, model_selection, datasets
-import os
+# tf.compat.v1.enable_eager_execution()
 
 
 # 문제
@@ -11,6 +11,22 @@ import os
 
 # 문제
 # linnerud데이터에 대해 함수형으로 예측하세요.
+def show_inside(middle_layer):
+    weights = middle_layer.weights
+    print(type(weights))
+    print(len(weights))  # 2
+
+    a, b = weights[0], weights[1]
+    print(a.shape, b.shape)  # (4, 7) (7,)
+    # print(tf.keras.backend.get_value(a))
+    # print(tf.keras.backend.get_value(b))
+
+    print(middle_layer.bias)
+
+    # 1.14에서는 동작안함.
+    # new_model = tf.keras.Model(model.input, first_layers.output)
+    # new_preds = new_model.predict(x_test)
+    # print(new_preds.shape)
 
 def softmax_iris_1():
     iris = pd.read_csv('data/iris(150).csv', index_col=0)
@@ -37,11 +53,10 @@ def softmax_iris_1():
 
     model.summary()
 
-    # first_layers = model.get_layer(name='dense')
-    # print(type(first_layers))
-    #
-    # new_model = tf.keras.Model(model.input, first_layers)
-    # print(new_model.predict(x_test))
+    first_layers = model.get_layer(name='dense')
+    print(type(first_layers))
+
+    return show_inside()
 
 def softmax_iris_2():
     iris = pd.read_csv('data/iris(150).csv', index_col=0)
@@ -83,9 +98,9 @@ def softmax_iris_2():
 
     # print(tf.keras.backend.get_value(dense1,output))
 
-    new_model = tf.keras.Model(dense1.input, output)
-    print(new_model.predict(x_test))
-
+    # new_model = tf.keras.Model(dense1.input, output)
+    # print(new_model.predict(x_test))
+    show_inside(dense1)
 def linnerud_functional():
 
     def show_difference_all(preds, labels):
@@ -97,15 +112,23 @@ def linnerud_functional():
 
     y0, y1, y2 = y[:,:1], y[:, 1:2], y[:, 2:]
 
+    # 1번
     input = tf.keras.layers.Input([3])
-    output0 = tf.keras.layers.Dense(1)(input)
-    output1 = tf.keras.layers.Dense(1)(input)
-    output2 = tf.keras.layers.Dense(1)(input)
+
+    output0 = tf.keras.layers.Dense(5)(input)
+    output0 = tf.keras.layers.Dense(1)(output0)
+
+    output1 = tf.keras.layers.Dense(5)(input)
+    output1 = tf.keras.layers.Dense(1)(output1)
+
+    output2 = tf.keras.layers.Dense(5)(input)
+    output2 = tf.keras.layers.Dense(3)(output2)
+    output2 = tf.keras.layers.Dense(1)(output2)
 
     model = tf.keras.Model(input,[output0, output1, output2])
 
     model.compile(optimizer=tf.keras.optimizers.Adam(0.01),
-                  loss=tf.keras.losses.mse,
+                  loss=tf.keras.losses.mae,
                   metrics = ['mse'])
 
     history = model.fit(x, [y0, y1, y2], epochs = 10, verbose=0)
@@ -127,7 +150,7 @@ def linnerud_functional():
 
 
 # preds = model.predict(x)
-     # print(preds)
+# print(preds)
 # softmax_iris_1()
 # softmax_iris_2()
 linnerud_functional()
@@ -135,4 +158,8 @@ linnerud_functional()
 # 문제
 # show_different_all 함수를 사용해서    를 구하세요.
 
+# 2번
+# 평균 오차 : [53.15948658]
+# 평균 오차 : [73.18978825]
+# 평균 오차 : [21.45948105]
 
