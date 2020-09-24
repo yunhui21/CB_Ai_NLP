@@ -87,13 +87,12 @@ def model_tfidf(popcorn, n_samples=-1):
     print('acc :', lr.score(x_test, y_test))
 
 
-popcorn = pd.read_csv('word2vec-popcorn/labeledTrainData.tsv',
-                      delimiter='\t',
-                      index_col=0)
+popcorn = pd.read_csv('../data/word2vec-popcorn/labeledTrainData.tsv',
+                      delimiter='\t', index_col=0)
 # print(popcorn.head())
 
-# model_baseline(popcorn, n_samples=1000)
-model_tfidf(popcorn, n_samples=1000)
+model_baseline(popcorn, n_samples=1000)
+# model_tfidf(popcorn, n_samples=1000)
 
 
 # (baseline)  0.83

@@ -95,5 +95,5 @@ def model_tfidf(popcorn, n_samples= -1):
 popcorn = pd.read_csv('data/word2vec-popcorn/labeledTrainData.tsv', '\t', index_col=0)
 print(popcorn.head())
 
-# model_baseline(popcorn, n_samples=1000)
-model_tfidf(popcorn, n_samples=1000)
+model_baseline(popcorn, n_samples=1000)
+# model_tfidf(popcorn, n_samples=1000)

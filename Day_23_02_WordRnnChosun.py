@@ -61,7 +61,7 @@ def act_like_writer(sent, model, word2idx, idx2word, seq_length = 25):
 tokens, vocab = get_data()
 # print(vocab)
 
-word2idx = {w:i for i, w in enumerate(vocab)}
+word2idx = {w: i for i, w in enumerate(vocab)}
 idx2word = np.array(vocab)
 
 tokens_idx = [word2idx for w in tokens]
@@ -69,8 +69,8 @@ tokens_idx = [word2idx for w in tokens]
 # print(tokens_idx[:5])
 
 sent_slices = tf.data.Dataset.from_tensor_slices(tokens_idx)
-print(sent_slices)
-print(sent_slices.take(2))
+# print(sent_slices)
+# print(sent_slices.take(2))
 
 for s in sent_slices.take(2):
     print(s.numpy(), s)
