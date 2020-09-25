@@ -152,8 +152,8 @@ def linnerud_functional():
 # preds = model.predict(x)
 # print(preds)
 # softmax_iris_1()
-# softmax_iris_2()
-linnerud_functional()
+softmax_iris_2()
+# linnerud_functional()
 
 # 문제
 # show_different_all 함수를 사용해서    를 구하세요.

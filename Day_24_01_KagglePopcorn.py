@@ -91,7 +91,6 @@ def model_tfidf(popcorn, n_samples= -1):
     lr.fit(x_train, y_train)
     print('acc:', lr.score(x_test, y_test))
 
-
 popcorn = pd.read_csv('data/word2vec-popcorn/labeledTrainData.tsv', '\t', index_col=0)
 print(popcorn.head())
 
