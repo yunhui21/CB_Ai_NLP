@@ -60,27 +60,26 @@ def act_like_writer(sent, model, word2idx, idx2word, seq_length=25):
 
     print(current)
 
-
 def model_chosun():
     tokens, vocab = get_data()
     print(vocab)
 
-    word2idx = {w: i for i, w in enumerate(vocab)}
+    word2idx = {w:i for i, w in enumerate(vocab)}
     idx2word = np.array(vocab)
 
     tokens_idx = [word2idx[w] for w in tokens]
-    print(tokens[:5])  # ['태조', '이성계', '선대의', '가계', '목조']
-    print(tokens_idx[:5])  # [135, 101, 66, 6, 49]
+    print(tokens[:5])           # ['태조', '이성계', '선대의', '가계', '목조']
+    print(tokens_idx[:5])       # [135, 101, 66, 6, 49]
 
     sent_slices = tf.data.Dataset.from_tensor_slices(tokens_idx)
-    print(sent_slices)  # <DatasetV1Adapter shapes: (), types: tf.int32>
+    print(sent_slices)          # <DatasetV1Adapter shapes: (), types: tf.int32>
     print(sent_slices.take(2))  # <DatasetV1Adapter shapes: (), types: tf.int32>
 
     for s in sent_slices.take(2):
-        print(s.numpy(), s)  # 135, 101, ...
+        print(s.numpy(), s)         # 135, 101, ...
     print()
 
-    seq_length = 25  # x           y
+    seq_length = 25                 # x           y
     sent_batches = sent_slices.batch(seq_length + 1, drop_remainder=True)
 
     for s in sent_batches.take(2):
@@ -105,7 +104,7 @@ def model_chosun():
     sent_final = sent_shuffle.batch(batch_size)
 
     for xx, yy in sent_final.take(2):
-        print(xx.shape, yy.shape)  # (128, 25) (128,)
+        print(xx.shape, yy.shape)       # (128, 25) (128,)
     print()
 
     model = tf.keras.Sequential([
@@ -129,19 +128,17 @@ def model_chosun():
               steps_per_epoch=steps_per_epoch,
               epochs=20, verbose=2)
 
-    # model.save('data/chosun_100.h5')
     act_like_writer('동헌에 나가 활을 쏘다', model, word2idx, idx2word, seq_length)
 
-
 def load_chosun():
-    tokens, vocab = get_data()
+
+    tokens, vacab = get_data()
 
     word2idx = {w: i for i, w in enumerate(vocab)}
     idx2word = np.array(vocab)
 
-    model = tf.keras.models.load_model('data/chosun_100.h5')
-    act_like_writer('동헌에 나가 활을 쏘다', model, word2idx, idx2word, seq_length=25)
-
+    model = tf.keras.models.load_model('data/chousun.100.h5')
+    act_like_writer('동현에 나가 활을 쏘다.', model, word2idx, idx2word, seq_length=25)
 
 # model_chosun()
-# load_chosun()
+load_chosun()
