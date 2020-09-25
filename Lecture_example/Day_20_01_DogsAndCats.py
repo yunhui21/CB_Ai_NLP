@@ -61,7 +61,6 @@ def make_folder_structure():
     make_folder_if_not_exist('dogs-vs-cats/small/valid/cats')
     make_folder_if_not_exist('dogs-vs-cats/small/valid/dogs')
 
-
 def make_small_datset():
     def copy_data(animal, start, end, target):
         dst_folder = os.path.join('dogs-vs-cats/small/', target)
@@ -82,7 +81,6 @@ def make_small_datset():
 
     copy_data('dog', 1500, 2000, 'test/dogs')
     copy_data('cat', 1500, 2000, 'test/cats')
-
 
 def generator_basic():
     generator = tf.keras.preprocessing.image.ImageDataGenerator()
