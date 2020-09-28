@@ -245,8 +245,8 @@ x_test = test_set.review
 # print(ids[:10])
 # model_baseline(x, y, ids, x_test)
 # model_tfidf(x, y, ids, x_test)
-# model_word2vec(x, y , ids, x_test)
-model_cnn(x, y, ids, x_test)
+model_word2vec(x, y , ids, x_test)
+# model_cnn(x, y, ids, x_test)
 
 # 추가수업
 # 1. word2vec - stemming, stopwords
