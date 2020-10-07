@@ -23,3 +23,12 @@ print(3>=3)
 
 mystock = 'naver'
 print(mystock == 'naver')
+
+day1 = 10000
+day2 = 13000
+print((day2-day1) == (day1 * 0.3))
+
+# 2) 논리연산자
+'''
+기준가격 
+1차 계산: 기준 가격에 0.3을 곱한다.'''
