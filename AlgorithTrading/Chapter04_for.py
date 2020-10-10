@@ -131,6 +131,72 @@ while i <= 10:
 print(i)
 
 # 4)-5-1 while문을 이용한 상한가 계산
+wikibooks_cur_price = 10000
+#first price
+first_price = wikibooks_cur_price + wikibooks_cur_price*0.3
+print(first_price)
+#second price
+second_price = first_price + first_price * 0.3
+print(second_price)
+#third_price
+third_price = second_price + second_price * 0.3
+print(third_price)
 
+wikibooks = 10000
+day = 1
+while day < 6:
+    wikibooks = wikibooks + wikibooks * 0.3
+    day = day + 1
+    print(wikibooks)
+# while 문의 조건 확인
+# 조건을 만족하면 while 문 내부의 코드를 차례로 수행하고, 조건을 만족하지 않으면 while 문의 다음 문장을 수행
+# 위의 과정에서 while문 내부의 코드를 차례로 수행한 경우 다시 while 문의 조건 확인으로 이동
 
+# 4)-5-2 while과 if
+num = 0
+while num <= 10:
+    if num % 2 == 1:
+        print(num)
+    num +=1
 
+# 4)-5-3 break와 continue
+while 1:
+    print('find stocks')
+    break
+num = 0
+while 1:
+    print(num)
+    if num == 10:
+        break
+    num += 1
+
+num = 0
+while num < 10:
+    num += 1
+    if num == 5:
+        continue
+    print(num)
+
+# 4)-5-6 중첩루프
+for i in  [1,2,3,4]:
+    for j in [1,2,3,4]:
+        pass
+
+'''
+1층에 가서 1층의 각 세대에 신문 배달
+2층에 가서 2층의 각 세대에 신문 배달
+3층에 가서 3층의 각 세대에 신문 배달
+4층에 가서 4층의 각 세대에 신문 배달
+'''
+for i in [101, 102, 103, 104 ]:
+    print('Delivery :', i)
+apart = [[101, 102, 103, 104],
+        [201, 202, 203, 204],
+        [301, 302, 303, 304],
+        [401, 402, 403, 404]]
+for i in apart:
+    print('Delivery :', i)
+
+for floor in apart:
+    for room in floor:
+        print('Newspaper delivery:', room)
