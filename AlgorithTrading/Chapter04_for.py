@@ -115,5 +115,22 @@ stocks = ('naver', 'samsung', 'sk hynix')
 for company in stocks:
     print('%s: Buy 10'%company)
 
+# 4)-4 for와 딕셔너리
+stocks = {'Naver':10, 'Samsung':5, 'SK Hynix':30}
+for company, stock_num in stocks.items():
+    print('%s : Buy %s' %(company, stock_num))
+
+for company in stocks.keys():
+    print('%s : Buy %s' % (company, stocks[company]))
+
+# 4)- 5 while문
+i = 0
+while i <= 10:
+    print(i)
+    i = i + 1
+print(i)
+
+# 4)-5-1 while문을 이용한 상한가 계산
+
 
 
