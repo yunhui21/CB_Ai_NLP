@@ -21,3 +21,9 @@ def print_ntimes(n):
         print('대신증권')
 
 print_ntimes(3)
+
+# 5)-2 반환값이 있는 함수
+def cal_upper(price):
+    pass
+
+cal_upper(10000)
