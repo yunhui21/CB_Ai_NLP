@@ -251,4 +251,4 @@ model_word2vec(x, y , ids, x_test)
 # 추가수업
 # 1. word2vec - stemming, stopwords
 # 2. rnn(baseline) 모델 수정
-# 3.
+# 3. cnn - tf.keras 활용
