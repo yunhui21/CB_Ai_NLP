@@ -13,8 +13,8 @@ import numpy as np
 def softmax_mnist():
 
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.fashion_mnist.load_data()
-    print(x_train.shape, x_test.shape)  # (60000, 28, 28) (10000, 28, 28) 3차원/ 2차원을 취급
-    print(y_train.shape, y_test.shape)  # (60000,) (10000,) 원핫이 아님
+    # print(x_train.shape, x_test.shape)  # (60000, 28, 28) (10000, 28, 28) 3차원/ 2차원을 취급
+    # print(y_train.shape, y_test.shape)  # (60000,) (10000,) 원핫이 아님
 
     x_train = x_train.reshape(-1, 784)
     x_test  = x_test.reshape(-1, 784)
