@@ -136,6 +136,31 @@ def generator_basic():
         if i < 10:
             break
 
+def show_augmentation(img_path):
+    img = tf.keras.preprocessing.image.load_img(img_path, target_size=[150, 150])
+
+    x = tf.keras.preprocessing.image.img_to_array(img)
+    print(x.shape)
+
+    x = x[np.newaxis]
+    print(x.shape)
+
+    generator = tf.keras.preprocessing.image.ImageDataGenerator(rotation_range=20,
+                                                                width_shift_range=0.1,
+                                                                height_shift_range=0.1,
+                                                                shear_range=0.1,
+                                                                zoom_range=0.1,
+                                                                horizontal_flip=True)
+    for i, batch in enumerate(generator.flow(x, batch_size=1), 1):
+        # print(i)
+        plt.subplot(2, 2, i)
+        plt.imshow(tf.keras.preprocessing.image.array_to_img(batch[0]))
+
+        if i >= 4:
+            break
+
+    plt.show()
+
 # make_folder_structure()
 # small_dataset_0()
 # small_dataset_()
