@@ -20,10 +20,20 @@ def print_ntimes(n):
     for i in range(n):
         print('대신증권')
 
-print_ntimes(3)
+# print_ntimes(3)
 
 # 5)-2 반환값이 있는 함수
+
 def cal_upper(price):
     pass
 
-cal_upper(10000)
+def call_upper(price):
+    increment = price * 0.3
+    upper_price = price + increment
+    return upper_price
+
+call_upper(10000)
+
+
+# 5)-2-1 함수 호출 과정 이해하기
+
