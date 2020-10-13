@@ -62,7 +62,7 @@ def rnn_jena_temperature():
     jena = jena[:1000]
     degc = jena['T (degC)'].values
 
-    batch_size, seq_length, n_features = 100, 144, 1
+    batch_size, seq_length, n_features = 100, 144, 1 # 하루치데이터 144개 온도만 다루어서 1, 다음날 온도는 144를 지금 시간에 더하면 나온다.
     hidden_size = 150
 
     # --------------------------------- #
@@ -196,7 +196,7 @@ def rnn_jena_multi():
     outputs, _states = tf.nn.dynamic_rnn(multi, ph_x, dtype=tf.float32)
     print(outputs.shape)    # (?, 144, 150)
 
-    z = tf.layers.dense(inputs=outputs[:, -1, :], units=1, activation=None)
+    z = tf.layers.dense(inputs=outputs[:, -1, :], units=1, activation=None)# 앞쪽의 결과는 다 버리고 마지막 데이터만 사용한다. -1
 
     loss_i = (z - ph_y) ** 2
     loss = tf.reduce_mean(loss_i)

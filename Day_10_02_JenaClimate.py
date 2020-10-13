@@ -72,6 +72,6 @@ def jena_regression():
     # degc.plot(subplots=True)
     # plt.show()
 
-
+# show_temperature()
 jena_regression()
 
