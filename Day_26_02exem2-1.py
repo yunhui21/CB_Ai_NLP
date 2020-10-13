@@ -24,7 +24,7 @@ x_train = x_train.reshape(-1, 28, 28, 1)
 x_test  = x_test.reshape(-1, 28, 28, 1)
 
 model = tf.keras.Sequential()
-model.add(tf.keras.layers.Input([28,28]))
+# model.add(tf.keras.layers.Input([28,28]))
 model.add(tf.keras.layers.Reshape([28,28, 1]))
 
 model.add(tf.keras.layers.Conv2D(64, [3,3],[1,1],'same',activation= tf.keras.activations.relu))
@@ -39,7 +39,6 @@ model.add(tf.keras.layers.Flatten())
 model.add(tf.keras.layers.Dense(128, tf.keras.activations.relu))
 model.add(tf.keras.layers.Dense(10, tf.keras.activations.softmax))
 
-model.summary()
 
 model.compile(optimizer=tf.keras.optimizers.Adam(0.001),
               loss = tf.keras.losses.sparse_categorical_crossentropy,
