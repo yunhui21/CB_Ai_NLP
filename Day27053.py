@@ -238,7 +238,7 @@ def model_gru_stack(train_gen, valid_gen, steps_valid, n_features):
 def model_bidirectional(train_gen, valid_gen, steps_valid, n_features):
     model = tf.keras.Sequential()
     model.add(tf.keras.layers.Input([None, n_features]))
-    model.add(tf.keras.layers.GRU(32))
+    model.add(tf.keras.layers.Bidirectional(tf.keras.layers.GRU(32)))
     model.add(tf.keras.layers.Dense(1))
 
     model.compile(optimizer='rmsprop', loss='mae')
@@ -248,8 +248,29 @@ def model_bidirectional(train_gen, valid_gen, steps_valid, n_features):
                                   validation_data=valid_gen,
                                   validation_steps=steps_valid,
                                   verbose=2)
-    save_history(history, 'data/jena_4_gru_stack.pickle.history')
+    save_history(history, 'data/jena_5_bidirectional.pickle.history')
 
+
+def model_1d_conv(train_gen, valid_gen, steps_valid, n_features):
+    model = tf.keras.Sequential()
+    model.add(tf.keras.layers.Input([None, n_features]))
+    model.add(tf.keras.layers.Conv1D(32, 5, activation='relu'))
+    model.add(tf.keras.layers.MaxPool1D(3))
+    model.add(tf.keras.layers.Conv1D(32, 5, activation='relu'))
+    model.add(tf.keras.layers.MaxPool1D(3))
+    model.add(tf.keras.layers.Conv1D(32, 5, activation='relu'))
+    model.add(tf.keras.layers.MaxPool1D(3))
+    model.add(tf.keras.layers.GlobalAveragePooling1D())
+    model.add(tf.keras.layers.Dense(1))
+
+    model.compile(optimizer='rmsprop', loss='mae')
+    history = model.fit_generator(train_gen,
+                                  steps_per_epoch=500,
+                                  epochs=20,
+                                  validation_data=valid_gen,
+                                  validation_steps=steps_valid,
+                                  verbose=2)
+    save_history(history, 'data/jena_6_1d_conv.pickle.history')
 
 # generator_basic()
 
@@ -262,11 +283,12 @@ train_gen, valid_gen, steps_valid, std, n_features = make_generator()
 # model_gru_stack(train_gen, valid_gen, steps_valid, n_features)
 
 # show_history('data/jena_1_fc.pickle', '1_fc')
-# show_history('datajena_2_gru.pickle', '2_gru')
+# show_history('data/jena_2_gru.pickle', '2_gru')
 # show_history('data/jena_3_gru_dropout.pickle', '3_dropout')
 # show_history('data/jena_4_gru_stack.pickle', '4_stack')
 # show_history('data/jena_5_bidirectional.pickle', '5_bidirectional')
 # show_history('data/jena_6_1d_conv.pickle', '6_id_conv')
+show_history('data/jena_7_1d_conv_rnn.pickle', '7_id_conv_rnn')
 
 
 # baseline
