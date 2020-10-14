@@ -247,8 +247,8 @@ train_gen, valid_gen, steps_valid, std, n_features = make_generator()
 
 # show_history('data/jena_1_fc.pickle', '1_fc')
 # show_history('datajena_2_gru.pickle', '2_gru')
-# show_history('data/jena_3_gru_dropout.pickle', '3_dropout')
-show_history('data/jena_4_gru_stack.pickle', '4_stack')
+show_history('data/jena_3_gru_dropout.pickle', '3_dropout')
+# show_history('data/jena_4_gru_stack.pickle', '4_stack')
 
 
 # baseline
