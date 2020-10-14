@@ -28,3 +28,4 @@ d = dict(color='red', price=1000)       #순서가 중요하지 않는다.. 값�
 print(d)
 print(type(d))
 print(d['color'], d['price'])
+

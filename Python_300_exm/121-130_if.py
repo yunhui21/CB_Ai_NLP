@@ -83,9 +83,22 @@
 #     print('127:', '여자')
 
 # 128
-iden = input('주민등록번호:')
-local = iden.split('-')[1]
-if 0 <= int(local[1:3]) <= 8:
-    print('128:', '서울입니다.')
+# iden = input('주민등록번호:')
+# local = iden.split('-')[1]
+# if 0 <= int(local[1:3]) <= 8:
+#     print('128:', '서울입니다.')
+# else:
+#     print('128:', '서울이 아닙니다.')
+
+# 129
+identi = input('주민등록번호:')
+number = identi.split('-')
+first = number[0]*2 + number[1]*3 + number[2]*4 + number[3]*5 + \
+        number[4]*6 + number[5]*7 + number[7]*8 + number[8]*9 + \
+        number[9]*2 + number[10]*3 + number[11]*4 + number[12]*5
+second = first % 11
+third = second-7
+if third == 4:
+    print('129: 유효한 주민등록번호업니다.')
 else:
-    print('128:', '서울이 아닙니다.')
+    print('129: 유효하지 않은 주민등록번호입니다.')
