@@ -272,6 +272,24 @@ def model_1d_conv(train_gen, valid_gen, steps_valid, n_features):
                                   verbose=2)
     save_history(history, 'data/jena_6_1d_conv.pickle.history')
 
+
+def model_1d_conv_rnn(train_gen, valid_gen, steps_valid, n_features):
+    model = tf.keras.Sequential()
+    model.add(tf.keras.layers.Input([None, n_features]))
+    model.add(tf.keras.layers.Conv1D(32, 5, activation='relu'))
+    model.add(tf.keras.layers.MaxPool1D(3))
+    model.add(tf.keras.layers.GRU(32, dropout=0.1, recurrent_dropout=0.5))
+    model.add(tf.keras.layers.Dense(1))
+
+    model.compile(optimizer='rmsprop', loss='mae')
+    history = model.fit_generator(train_gen,
+                                  steps_per_epoch=500,
+                                  epochs=20,
+                                  validation_data=valid_gen,
+                                  validation_steps=steps_valid,
+                                  verbose=2)
+    save_history(history, 'data/jena_7_1d_conv_rnn.pickle.history')
+
 # generator_basic()
 
 train_gen, valid_gen, steps_valid, std, n_features = make_generator()
@@ -281,6 +299,9 @@ train_gen, valid_gen, steps_valid, std, n_features = make_generator()
 # model_gru(train_gen, valid_gen, steps_valid, n_features)
 # model_gru_dropout(train_gen, valid_gen, steps_valid, n_features)
 # model_gru_stack(train_gen, valid_gen, steps_valid, n_features)
+# model_bidirectional(train_gen,valid_gen,steps_valid,n_features)
+# model_1d_conv(train_gen,valid_gen,steps_valid,n_features)
+# model_1d_conv_rnn(train_gen,valid_gen,steps_valid,n_features)
 
 # show_history('data/jena_1_fc.pickle', '1_fc')
 # show_history('data/jena_2_gru.pickle', '2_gru')
@@ -294,6 +315,12 @@ show_history('data/jena_7_1d_conv_rnn.pickle', '7_id_conv_rnn')
 # baseline
 # mae mean : 0.2895216161408672
 # celcius  : 2.562940948382028
+
+# 성능향상
+# 1.
+# 2.
+# 3. 각각의 모델의 구현된 기법들을 합성
+# 4. 최종 모델로부터 최적의 순간 포착
 
 
 # a b c d e f g
