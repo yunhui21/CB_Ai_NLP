@@ -199,12 +199,22 @@ def model_flowers_03():
 def model_flowers_04():
     img_size = 112
     x, y, n_classes = make_flowers_xy('17flowers_origin', img_size=img_size)
-     = flow(x, y=None, batch_size=32, shuffle=True, sample_weight=None, seed=None,
-        save_to_dir=None, save_prefix='', save_format='', subset=None    )
-
-    x = x / 255
 
     x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, train_size=0.8)
+
+    train_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1 / 255,
+                                                                rotation_range=20,
+                                                                width_shift_range=0.1,
+                                                                height_shift_range=0.1,
+                                                                shear_range=0.1,
+                                                                zoom_range=0.1,
+                                                                horizontal_flip=True)
+    valid_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1 / 255)
+
+    batch_size = 32
+    train_flow = train_gen.flow(x_train, y_train, batch_size=batch_size)
+    valid_flow = valid_gen.flow(x_test, y_test, batch_size=batch_size)
+
 
     conv_base = tf.keras.applications.VGG16(include_top=False)
     conv_base.trainable = False
@@ -224,7 +234,7 @@ def model_flowers_04():
                   loss=tf.keras.losses.sparse_categorical_crossentropy,
                   metrics=['acc'])
 
-    model.fit(x_train, y_train, epochs=50, batch_size=32, verbose=1, validation_data=[x_test, y_test])
+    model.fit_generator(train_flow, epochs=50, verbose=1, validation_data=valid_flow)
 # model_flowers_01()
 # model_flowers_02()
 # make_augmentation_folders()
