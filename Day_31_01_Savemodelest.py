@@ -69,7 +69,10 @@ def save_load_1():
     model.fit(x_train, y_train, epochs=100, verbose=0)
     print('acc :', model.evaluate(x_test, y_test, verbose=0))
 
-    model.save('model_abalone/keras_basic')
-    model.save('model_abalone/keras_basic.tf')
+    # model.save('model_abalone/keras_basic')
+    # model.save('model_abalone/keras_basic.tf')
+
+    json = model.to_json()
+    print(json)
 
 save_load_1()
