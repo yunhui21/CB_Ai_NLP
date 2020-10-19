@@ -54,6 +54,7 @@ def build_model():
 
 
     model = tf.keras.Sequential()
+    model.add(tf.keras.layers.Dense(30, activation='relu'))
     model.add(tf.keras.layers.Dense(30, activation='softmax')) # 이왕이면 max
     # model.add(tf.keras.layers.Dense(np.max(y)+1, activation='softmax')) # 이왕이면 max
 
@@ -75,4 +76,27 @@ def save_load_1():
     json = model.to_json()
     print(json)
 
-save_load_1()
+    model2 = tf.keras.models.model_from_json(json)
+
+    yaml = model.to_yaml()
+    print(yaml)
+
+    model3 = tf.keras.models.model_from_yaml(yaml)
+
+def save_load_2():
+    x_train, x_test, y_train, y_test = get_abalone()
+    model = build_model()
+    model.fit(x_train, y_train, epochs=100, verbose=0)
+    print('acc :', model.evaluate(x_test, y_test, verbose=0))
+
+    model.save('model_abalone/keras_basic.h5')
+
+    model_saved = tf.keras.models.load_model('model_abalone/keras_basic.h5')
+    print('acc :', model.evaluate(x_test, y_test, verbose=0))
+
+    preds = model_saved.predict(x_test, verbose=0)
+    preds_arg = np.argmax(preds, axis=1)
+
+    print('acc:', np.mean(preds_arg == y_test))
+# save_load_1()
+save_load_2()
