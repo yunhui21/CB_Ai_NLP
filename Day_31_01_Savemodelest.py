@@ -70,6 +70,8 @@ def save_load_1():
     model.fit(x_train, y_train, epochs=100, verbose=0)
     print('acc :', model.evaluate(x_test, y_test, verbose=0))
 
+    # model.save('model_abalone')
+    # model.save('model_abalone', save_format='tf')
     # model.save('model_abalone/keras_basic')
     # model.save('model_abalone/keras_basic.tf')
 
@@ -88,6 +90,7 @@ def save_load_2():
     model = build_model()
     model.fit(x_train, y_train, epochs=100, verbose=0)
     print('acc :', model.evaluate(x_test, y_test, verbose=0))
+
 
     model.save('model_abalone/keras_basic.h5')
 
