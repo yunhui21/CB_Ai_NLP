@@ -76,5 +76,21 @@ if __name__ == '__main__':
 # 시간과 날짜를 다루는 모듈 : time , datetime
 
 import time
+import random
+
 print(time.time())
 print(time.ctime())
+cur_time = time.ctime()
+print(cur_time.split(' ')[-1])
+# for i in range(10):
+#     print(i)
+#     time.sleep(1)
+
+print(time)
+print(random)
+print(dir(time))
+
+# 5)-3-3 OS 모듈
+import os
+print(os.getcwd())
+print(os.listdir())
