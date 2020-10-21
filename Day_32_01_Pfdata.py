@@ -10,6 +10,40 @@ import pandas as pd
 # Day_31_02_savemodelist.py 파일의 abalan 데이터를
 # tf.keras.datasets을 사용해서 재구성하세요.
 
+def get_abalone():
+    abalone = pd.read_csv('data/abalone.data',
+                          header=None,
+                          names=['Sex', 'Length', 'Diameter', 'Height',
+                                 'Whole', 'Shucked', 'Viscera', 'Shell', 'Rings'])
+    # print(abalone)
+
+    # abalone.info()
+    # print(abalone.describe())
+
+    y = abalone.Rings.values
+    x = abalone.values[:, 1:-1]
+    # print(x.shape, y.shape)         # (4177, 7) (4177,)
+
+    sex = preprocessing.LabelBinarizer().fit_transform(abalone.Sex.values)
+    # print(sex.shape)                # (4177, 3)
+
+    # 문제
+    # x에다가 sex 컬럼을 추가하세요
+    # x = np.hstack([x, sex])
+    x = np.concatenate([x, sex], axis=1)
+    # print(x.shape)                  # (4177, 10)
+
+    x = np.float32(x)
+
+    indices = np.arange(len(x))
+    np.random.shufle(indices)
+
+    x = x[indices]
+    y = y[indices]
+    data = model_selection.train_test_split(x, y, train_size=0.8)
+    x_train, x_test, y_train, y_test = data
+
+    return x_train, x_test, y_train, y_test
 
 def get_abalone_by_tfdata():
     abalone = pd.read_csv('data/abalone.data',
@@ -63,7 +97,6 @@ def build_model():
 
     return model
 
-
 def model_abalon():
 
     # x_train , y_train을 묶는것은 안됨.
@@ -88,5 +121,53 @@ def model_abalon():
 
     print('acc :', model.evaluate(ds_test, verbose=0))
 
+def model_abalone_1():
+    x_train, x_test, y_train, y_test = get_abalone()
+
+    ds_train = tf.data.Dataset.from_tensor_slices((x_train, y_train))
+    ds_train = ds_train.batch(32, drop_remainder=True)
+
+    ds_test = tf.data.Dataset.from_tensor_slices((x_test, y_test))
+    ds_test = ds_test.batch(32, drop_remainder=True)
+
+    model = build_model()
+
+    train_steps = len(x_train) // 32
+    valid_steps = len(x_test) // 32
+
+    model.fit(ds_train.repeat(), epochs=10, verbose=2,
+              steps_per_epoch=train_steps,
+              validation_data=ds_test.repeat(),
+              validation_steps=valid_steps)
+    print('acc :', model.evaluate(ds_test, verbose=0))
+
+
+def model_abalone_2():
+    ds_train, ds_test = get_abalone_by_tfdata()
+
+    # print(tf.data.experimental.cardinality(ds_train)) # tf.Tensor(104, shape=(), dtype=int64)
+    # print(tf.data.experimental.cardinality(ds_train).numpy()) #104
+
+    # print(ds_train.cardinality()) # tf.Tensor(104, shape=(), dtype=int64)
+
+    model = build_model()
+
+    # train_steps = tf.data.experimental.cardinality((ds_train).numpy()) // 32
+    # valid_steps = tf.data.experimental.cardinality((ds_test).numpy()) // 32
+
+    train_steps = ds_train.cardinality() // 32
+    valid_steps = ds_test.cardinality() // 32
+
+    # model.fit(ds_train, epochs=10, verbose=2,
+    #           validation_data=ds_test)
+    model.fit(ds_train.repeat(), epochs=10, verbose=2,
+              steps_per_epoch=train_steps,
+              validation_data=ds_test.repeat(),
+              validation_steps=valid_steps)
+    print('acc :', model.evaluate(ds_test, verbose=0))
+
+
 # get_abalone_by_tfdata()
-model_abalon()
+# model_abalon()
+# model_abalone_1()
+model_abalone_2()

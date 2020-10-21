@@ -12,7 +12,12 @@ import tensorflow_hub as hub
 # tensorflow-hub : 허브의 역할
 def get_image_classfier():
 
-    url = 'https://tfhub.dev/google/tf2-preview/mobilenet_v2/classification/4'
+    # url = 'https://tfhub.dev/google/tf2-preview/mobilenet_v2/classification/4'
+    # url = 'https://tfhub.dev/google/tf2-preview/mobilenet_v2/classification/2'
+    url = 'https://tfhub.dev/tensorflow/resnet_50/classification/1'
+
+# 문제
+# resnet 5.0을 가져오세요.
 
     model = tf.keras.Sequential()
     model.add(tf.keras.layers.Input([224, 224, 3]))
@@ -78,7 +83,6 @@ def classify_Image():
     plt.show()
 
 
-
 def classify_by_generator():
     images_url = 'https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz'
     images_path = tf.keras.utils.get_file('flower_photos', images_url, untar=True)
@@ -110,5 +114,5 @@ def classify_by_generator():
 
 
 
-# classify_Image()
-classify_by_generator()
+classify_Image()
+# classify_by_generator()
