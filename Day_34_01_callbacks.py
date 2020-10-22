@@ -19,6 +19,8 @@ import matplotlib.pyplot as plt
 # 다시 말해, test 제너레이터에 대해 fit 함수를 한번만 호출하면 됩니다
 # 예측 결과는 복사한 코드에 있는 걸 수정없이 사용합니다
 
+# 문제
+# batch에 대한
 def get_cars_sparse():
     cars = pd.read_csv('data/car.data',
                        header=None,
@@ -86,6 +88,35 @@ def get_resnet50():
 
     return model
 
+# class EveryBatch(tf.keras.callbacks.Callback):
+#     def __int__(self):
+#         self.batch_loss = []
+#         self.batch_acc = []
+#     def on_batch_begin(self, batch, logs=None):
+#         print('on_batch_begin', logs)
+#
+#     def on_batch_end(self, batch, logs=None):
+#         print('on_batch_end', logs) # dictionary를 생성
+#
+#         self.batch_loss.append(logs['loss'])
+#         self.batch_acc.append(logs['acc'])
+#         self.model.reset_metrics()
+
+class EveryBatch(tf.keras.callbacks.Callback):
+    def __init__(self):
+        self.batch_loss = []
+        self.batch_acc = []
+
+    def on_batch_begin(self, batch, logs=None):
+        print('on_batch_begin', logs)
+
+    def on_batch_end(self, batch, logs=None):
+        print('on_batch_end', logs)
+
+        self.batch_loss.append(logs['loss'])
+        self.batch_acc.append(logs['acc'])
+        self.model.reset_metrics()
+
 
 # 파인 튜닝을 해서 정확도를 대폭 상승시켰다
 def simple_transfer_learning():
@@ -108,45 +139,46 @@ def simple_transfer_learning():
     # steps_per_epoch 계산
     print(test_flow.samples, test_flow.batch_size) # 3670 32
 
+    every_batch =EveryBatch()
+
+    steps_per_epoch = test_flow.samples // test_flow.batch_size
+
     model.compile(optimizer='adam',
                   loss=tf.keras.losses.sparse_categorical_crossentropy,
                   metrics=['acc'])
 
-    steps_per_epoch = test_flow.samples // test_flow.batch_size
-    model.fit(test_flow, epochs=1, steps_per_epoch=steps_per_epoch)
+    model.fit(test_flow, epochs=1, steps_per_epoch=steps_per_epoch,
+              callbacks=[every_batch])
 
-    preds = model.predict(x, verbose=0)
+    indices = range(len(every_batch.batch_loss))
 
-    print(preds.shape)          # (32, 5)
-    print(test_flow.class_indices)
-    # {'daisy': 0, 'dandelion': 1, 'roses': 2, 'sunflowers': 3, 'tulips': 4}
+    plt.subplot(1, 2, 1)
+    plt.plot(indices, every_batch.batch_loss)
+    plt.title('loss')
 
-    # print(np.argmax(preds, axis=1))
-    # print(np.argmax(model(x), axis=1))        # 사용하지 마세요
-
-    # labels = [k for k in test_flow.class_indices]
-    labels = {v:k for k, v in test_flow.class_indices.items()}
-    print(labels)
-    # {0: 'daisy', 1: 'dandelion', 2: 'roses', 3: 'sunflowers', 4: 'tulips'}
-
-    labels = [name for _, name in sorted(labels.items())]
-    print(labels)
-    # ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
-
-    # 문제
-    # 이미지를 출력하면서 제목에 정답과 예측 결과를 함께 출력하세요
-
-    preds_arg = np.argmax(preds, axis=-1)
-
-    plt.figure(figsize=(12, 6))
-    for i, (img, label, pred) in enumerate(zip(x, y, preds_arg)):
-        plt.subplot(4, 8, i+1)
-        # plt.title('{}: {}'.format(labels[int(label)], labels[pred]))
-        plt.title(labels[pred], color='g' if int(label) == pred else 'r')
-        plt.axis('off')
-        plt.imshow(img)
+    plt.subplot(1, 2, 2)
+    plt.plot(indices, every_batch.batch_acc)
+    plt.title('acc')
 
     plt.show()
+
+    # preds = model.predict(x, verbose=0)
+    #
+    # labels = {v:k for k, v in test_flow.class_indices.items()}
+    #
+    # labels = [name for _, name in sorted(labels.items())]
+    #
+    # preds_arg = np.argmax(preds, axis=-1)
+    #
+    # plt.figure(figsize=(12, 6))
+    # for i, (img, label, pred) in enumerate(zip(x, y, preds_arg)):
+    #     plt.subplot(4, 8, i+1)
+    #     # plt.title('{}: {}'.format(labels[int(label)], labels[pred]))
+    #     plt.title(labels[pred], color='g' if int(label) == pred else 'r')
+    #     plt.axis('off')
+    #     plt.imshow(img)
+    #
+    # plt.show()
 
 # cars_evaluation_sparse_plateau()
 
