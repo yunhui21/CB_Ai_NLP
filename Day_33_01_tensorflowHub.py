@@ -46,7 +46,7 @@ def get_resnet50():
 # resnet50모델의 피쳐백터를 사용해서 꼿 데이터 첫번째 배치를 구하세요.
 '''
 '''
-
+# 학습없이 5개의 갖고와서 결과는 형편없다.
 def simple_transfer_learning():
     images_url = 'https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz'
     images_path = tf.keras.utils.get_file('flower_photos', images_url, untar=True)
@@ -91,7 +91,8 @@ def simple_transfer_learning():
         # print(img.shape, label, pred)
 
         plt.subplot(4, 8, i+1)
-        plt.title('{}:{}'.format(labels[int(label)],labels[pred]))
+        # plt.title('{}:{}'.format(labels[int(label)],labels[pred]))
+        plt.title(labels[pred], color='g' if int(label) == pred else 'r')
         plt.axis('off')
         plt.imshow(img)
     plt.show()

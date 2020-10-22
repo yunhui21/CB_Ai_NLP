@@ -1,13 +1,23 @@
 # Day_34_01_callbacks.py
-
 import tensorflow as tf
 import pandas as pd
 from sklearn import preprocessing, model_selection
 import numpy as np
+import tensorflow_hub as hub
+import matplotlib.pyplot as plt
 
 # 문제
-# callback중에서 플래터단어가 들어간 것ㅇ르 찻아서
-#
+# 콜백 중에서 plateau 단어가 들어간 것을 찾아서
+# 3 patience에 대해 동작하도록 추가하세요
+
+# 문제
+# 에포크에 포함된 batch 데이터를 처리할 때마다 결과를 보고 싶습니다
+
+# 문제
+# 복사한 코드에 대해 파인 튜닝을 하세요 (에포크 2회)
+# 만들어져 있는 test 제너레이터를 train으로 사용하세요
+# 다시 말해, test 제너레이터에 대해 fit 함수를 한번만 호출하면 됩니다
+# 예측 결과는 복사한 코드에 있는 걸 수정없이 사용합니다
 
 def get_cars_sparse():
     cars = pd.read_csv('data/car.data',
@@ -34,7 +44,7 @@ def get_cars_sparse():
     return np.float32(x), y  #, lb.classes_
 
 
-def cars_evaluation_srarse_plateau():
+def cars_evaluation_sparse_plateau():
     x, y = get_cars_sparse()
 
     indices = np.arange(len(x))
@@ -48,7 +58,6 @@ def cars_evaluation_srarse_plateau():
 
     x_train, x_valid, x_test = x[:train_size], x[train_size:train_size+test_size], x[-test_size:]
     y_train, y_valid, y_test = y[:train_size], y[train_size:train_size+test_size], y[-test_size:]
-    print(x_train.shape, x_valid.shape, x_test.shape)   # (1038, 6) (345, 6) (345, 6)
 
     model = tf.keras.Sequential()
     model.add(tf.keras.layers.Dense(len(set(y)), activation='softmax'))
@@ -56,22 +65,89 @@ def cars_evaluation_srarse_plateau():
     model.compile(optimizer=tf.keras.optimizers.SGD(),
                   loss=tf.keras.losses.sparse_categorical_crossentropy,
                   metrics=['acc'])
-    # plateau 러니이레이트를 줄여주는 효과
-    plateau= tf.keras.callbacks.ReduceLROnPlateau(patience=10, verbose=1)
 
-    model.fit(x_train, y_train, epochs=1000, batch_size=32,
+    plateau = tf.keras.callbacks.ReduceLROnPlateau(patience=3, verbose=1)
+
+    model.fit(x_train, y_train, epochs=100, batch_size=32,
               validation_data=(x_valid, y_valid), verbose=2,
               callbacks=[plateau])
+
     print('acc :', model.evaluate(x_test, y_test, verbose=0))
 
 
-cars_evaluation_srarse_plateau()
+def get_resnet50():
+    # url = 'https://tfhub.dev/tensorflow/resnet_50/classification/1'
+    url = 'https://tfhub.dev/tensorflow/resnet_50/feature_vector/1'
+
+    model = tf.keras.Sequential()
+    model.add(tf.keras.layers.Input([224, 224, 3]))
+    model.add(hub.KerasLayer(url, trainable=False))
+    model.add(tf.keras.layers.Dense(5, activation='softmax'))
+
+    return model
 
 
+# 파인 튜닝을 해서 정확도를 대폭 상승시켰다
+def simple_transfer_learning():
+    images_url = 'https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz'
+    images_path = tf.keras.utils.get_file('flower_photos', images_url, untar=True)
+    # print(images_path)
 
+    test_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1 / 255)
 
+    test_flow = test_gen.flow_from_directory(images_path,
+                                             target_size=[224, 224],
+                                             batch_size=32,
+                                             class_mode='sparse')
+    # x, y = test_flow.next()
+    x, y = next(test_flow)
+    print(x.shape, y.shape)     # (32, 224, 224, 3) (32,)
 
+    model = get_resnet50()
 
+    # steps_per_epoch 계산
+    print(test_flow.samples, test_flow.batch_size) # 3670 32
 
+    model.compile(optimizer='adam',
+                  loss=tf.keras.losses.sparse_categorical_crossentropy,
+                  metrics=['acc'])
 
+    steps_per_epoch = test_flow.samples // test_flow.batch_size
+    model.fit(test_flow, epochs=1, steps_per_epoch=steps_per_epoch)
 
+    preds = model.predict(x, verbose=0)
+
+    print(preds.shape)          # (32, 5)
+    print(test_flow.class_indices)
+    # {'daisy': 0, 'dandelion': 1, 'roses': 2, 'sunflowers': 3, 'tulips': 4}
+
+    # print(np.argmax(preds, axis=1))
+    # print(np.argmax(model(x), axis=1))        # 사용하지 마세요
+
+    # labels = [k for k in test_flow.class_indices]
+    labels = {v:k for k, v in test_flow.class_indices.items()}
+    print(labels)
+    # {0: 'daisy', 1: 'dandelion', 2: 'roses', 3: 'sunflowers', 4: 'tulips'}
+
+    labels = [name for _, name in sorted(labels.items())]
+    print(labels)
+    # ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
+
+    # 문제
+    # 이미지를 출력하면서 제목에 정답과 예측 결과를 함께 출력하세요
+
+    preds_arg = np.argmax(preds, axis=-1)
+
+    plt.figure(figsize=(12, 6))
+    for i, (img, label, pred) in enumerate(zip(x, y, preds_arg)):
+        plt.subplot(4, 8, i+1)
+        # plt.title('{}: {}'.format(labels[int(label)], labels[pred]))
+        plt.title(labels[pred], color='g' if int(label) == pred else 'r')
+        plt.axis('off')
+        plt.imshow(img)
+
+    plt.show()
+
+# cars_evaluation_sparse_plateau()
+
+simple_transfer_learning()
