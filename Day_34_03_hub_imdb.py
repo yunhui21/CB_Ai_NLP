@@ -56,7 +56,7 @@ train_set, valid_set, test_set = tfds.load('imdb_reviews',
                                                split=['train[:60%]', 'train[60%:]', 'test'])  # Dataset에서만 사용 가능한 문법
 
 
-def show_imdb(train_set, valid_set, test_set, url):
+def show_imdb01(train_set, valid_set, test_set, url):
     hub_layer = hub.KerasLayer(url,
                                # output_shape=[20],
                                input_shape=[],
@@ -76,10 +76,46 @@ def show_imdb(train_set, valid_set, test_set, url):
     test_set = test_set.batch(512)
     model.fit(train_set, epochs=20, validation_data=valid_set, verbose=0)
     model.evaluate(test_set, verbose=0)
+def show_imdb(train_set, valid_set, test_set, url):
+    # trainable을 False로 주면, 뒤쪽 모델로 갈수록 성능 차이가 많이 난다
+    # (순서대로 60%, 69%, 74%, 78%)
+    hub_layer = hub.KerasLayer(url,
+                               # output_shape=[20],
+                               input_shape=[],
+                               dtype=tf.string,
+                               trainable=True)
 
+    model = tf.keras.Sequential()
+    model.add(hub_layer)
+    model.add(tf.keras.layers.Dense(16, activation='relu'))
+    model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
+
+    model.compile(optimizer='adam',
+                  loss=tf.keras.losses.binary_crossentropy,
+                  metrics=['acc'])
+
+    train_set = train_set.shuffle(10000).batch(512)
+    valid_set = valid_set.batch(512)
+    test_set = test_set.batch(512)
+
+    model.fit(train_set,
+              epochs=20,
+              validation_data=valid_set,
+              verbose=2)
+    print(model.evaluate(test_set, verbose=0))
+
+
+train_set, valid_set, test_set = tfds.load(
+    'imdb_reviews', as_supervised=True,
+    split=['train[:60%]', 'train[60%:]', 'test'])
 
 # show_imdb_by_swivel()
 show_imdb(train_set, valid_set, test_set, 'https://tfhub.dev/google/tf2-preview/gnews-swivel-20dim/1')
 show_imdb(train_set, valid_set, test_set, 'https://tfhub.dev/google/tf2-preview/gnews-swivel-20dim-with-oov/1')
 show_imdb(train_set, valid_set, test_set, 'https://tfhub.dev/google/tf2-preview/nnlm-en-dim50/1')
 show_imdb(train_set, valid_set, test_set, 'https://tfhub.dev/google/tf2-preview/nnlm-en-dim128/1')
+# ms
+# [0.32032668590545654, 0.8654800057411194]
+# [0.32923516631126404, 0.8608400225639343]
+# [0.5020081400871277, 0.8503599762916565]
+#
