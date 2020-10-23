@@ -114,8 +114,9 @@ show_imdb(train_set, valid_set, test_set, 'https://tfhub.dev/google/tf2-preview/
 show_imdb(train_set, valid_set, test_set, 'https://tfhub.dev/google/tf2-preview/gnews-swivel-20dim-with-oov/1')
 show_imdb(train_set, valid_set, test_set, 'https://tfhub.dev/google/tf2-preview/nnlm-en-dim50/1')
 show_imdb(train_set, valid_set, test_set, 'https://tfhub.dev/google/tf2-preview/nnlm-en-dim128/1')
-# ms
+
+
 # [0.32032668590545654, 0.8654800057411194]
 # [0.32923516631126404, 0.8608400225639343]
 # [0.5020081400871277, 0.8503599762916565]
-#
+# [0.5404257774353027, 0.8503599762916565]
