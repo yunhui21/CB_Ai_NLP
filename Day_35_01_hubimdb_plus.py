@@ -67,3 +67,4 @@ model.fit(x_train, y_train,
           validation_split=0.4,
           verbose=2)
 print(model.evaluate(x_test, y_test, verbose=0))
+# [0.7376493215560913, 0.8451200127601624]
