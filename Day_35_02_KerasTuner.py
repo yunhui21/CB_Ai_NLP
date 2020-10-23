@@ -26,13 +26,13 @@ def model_builder(hp):
 def multi_layers_mnist():
 
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
-    print(x_train.shape, x_test.shape)  # (60000, 28, 28) (10000, 28, 28) 3차원/ 2차원을 취급
-    print(y_train.shape, y_test.shape)  # (60000,) (10000,) 원핫이 아님
+    # print(x_train.shape, x_test.shape)  # (60000, 28, 28) (10000, 28, 28) 3차원/ 2차원을 취급
+    # print(y_train.shape, y_test.shape)  # (60000,) (10000,) 원핫이 아님
 
     x_train = x_train.reshape(-1, 784)
     x_test  = x_test.reshape(-1, 784)
-    print(x_train[0])
-    print(x_train.dtype)    #uint8
+    # print(x_train[0])
+    # print(x_train.dtype)    #uint8
 
     scaler = preprocessing.MinMaxScaler()
     scaler.fit(x_train)
@@ -44,10 +44,21 @@ def multi_layers_mnist():
     x_test = np.float32(x_test)
 
     #-=----------------------------------------------------------------------------#
-    tuner = kt.BayesianOptimization(model_builder,
+    # tuner = kt.BayesianOptimization(model_builder,
+    #                                 objective='val_acc',  # fit 결과로 만들어진 key 중의 하나.
+    #                                 max_trials=5,
+    #                                 directory='keras_tuner/bayesian',
+    #                                 project_name='mnist')
+    # tuner = kt.RandomSearch(model_builder,
+    #                                 objective='val_acc',  # fit 결과로 만들어진 key 중의 하나.
+    #                                 max_trials=5,
+    #                                 directory='keras_tuner/randoms',
+    #                                 project_name='mnist')
+    tuner = kt.Hyperband(model_builder,
                                     objective='val_acc',  # fit 결과로 만들어진 key 중의 하나.
-                                    max_trials=5,
-                                    directory='keras_tuner/bayesian',
+                                    max_epochs=5,
+                                    # max_trials=5,
+                                    directory='keras_tuner/hyperband',
                                     project_name='mnist')
     #fit함수에 들어가는 매개변수를 사용
     tuner.search(x_train, y_train, epochs = 2, verbose=2, batch_size=100, validation_split=0.2)
@@ -59,6 +70,8 @@ def multi_layers_mnist():
     print(best_hps)
     print(best_hps[0])
     print(best_hps[0].get('lr'))
+
+    model = tuner.hypermodel.build(best_hps[0])
     # model.fit(x_train, y_train, epochs = 2, verbose=2, batch_size=100, validation_split=0.2)  #8:2검증
     # print('acc:', model.evaluate(x_test, y_test))
 
