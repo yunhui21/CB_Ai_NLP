@@ -8,7 +8,9 @@ from sklearn import preprocessing
 
 def model_builder(hp):
     model = tf.keras.Sequential()
-    model.add(tf.keras.layers.Dense(256, activation=tf.keras.activations.relu))
+
+    hp_unit_1 = hp.int('unit_1', min_value = 256, max_value = 512, step= 256)
+    model.add(tf.keras.layers.Dense(hp_unit_1, activation=tf.keras.activations.relu))
     model.add(tf.keras.layers.Dropout(0.1))
     model.add(tf.keras.layers.Dense(128, activation=tf.keras.activations.relu))
     model.add(tf.keras.layers.Dropout(0.1))
