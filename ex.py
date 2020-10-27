@@ -10,15 +10,15 @@ def make_vocab_and_index(data):
     eng = sorted({c for w, _ in data for c in w})
     kor = sorted({c for _, w in data for c in w})
 
-    print(eng)  # ['a', 'b', 'd', 'e', 'f', 'h', 'i', 'l', 'm', 'n', 'o', 'p', 'r', 'u', 'w']
-    print(kor)  # ['구', '나', '람', '랑', '무', '바', '식', '영', '웅', '음', '전', '파']
+    # print(eng)  # ['a', 'b', 'd', 'e', 'f', 'h', 'i', 'l', 'm', 'n', 'o', 'p', 'r', 'u', 'w']
+    # print(kor)  # ['구', '나', '람', '랑', '무', '바', '식', '영', '웅', '음', '전', '파']
 
     # SEP: Start, End, Padding
     vocab = ''.join(eng + kor) + 'SEP'
-    print(vocab)
+    # print(vocab)
 
     char2idx = {c: i for i, c in enumerate(vocab)}
-    print(char2idx)     # {'a': 0, 'b': 1, 'd': 2, ...}
+    # print(char2idx)     # {'a': 0, 'b': 1, 'd': 2, ...}
 
     return vocab, char2idx
 
@@ -29,7 +29,7 @@ def make_batch(data, char2idx):
 
     enc_inputs, dec_inputs, dec_target = [], [], []
     for eng, kor in data:
-        print(eng, 'S'+kor, kor+'E')
+        # print(eng, 'S'+kor, kor+'E')
 
         enc_in = [char2idx[c] for c in eng]
         dec_in = [char2idx[c] for c in 'S'+kor]
@@ -45,7 +45,7 @@ def make_batch(data, char2idx):
     return np.float32(enc_inputs), np.float32(dec_inputs), np.float32(dec_target)
 
 
-def show_seq2seq(enc_inputs, dec_inputs, dec_target, vocab):
+def show_seq2seq(enc_inputs, dec_inputs, dec_target, vocab, char2idx):
     n_classes, n_hiddens = len(vocab), 128
 
     ph_enc_in = tf.placeholder(tf.float32, [None, None, n_classes]) # (batch_size, time_steps, n_classes)
@@ -77,6 +77,24 @@ def show_seq2seq(enc_inputs, dec_inputs, dec_target, vocab):
         sess.run(train, {ph_enc_in: enc_inputs, ph_dec_in: dec_inputs})
         print(i, sess.run(loss, {ph_enc_in: enc_inputs, ph_dec_in: dec_inputs}))
 
+    # 문제
+    # 잘예측하는지 출력해주세요.(hero에 대해서만 검증하세요)
+    # dec_in을 만들어주어야 한다.
+    new_data=[('hero', 'pp'), ('blue', 'pp')]
+    enc_inputs, dec_inputs, _ = make_batch(new_data, char2idx)
+
+    preds =sess.run(hx, {ph_enc_in: enc_inputs, ph_dec_in: dec_inputs})
+    print(preds)
+    print(preds.shape) # (2, 3, 30)
+
+    preds_arg = np.argmax(preds, axis=2)
+    print(preds_arg) # [[22 23 28] [26 18 28]]
+
+    # results = [[vocab[j] for j in i] for i in preds_arg]
+    # print(results) # [['영', '웅', 'E'], ['파', '랑', 'E']]
+    results = [[vocab[j] for j in i[:-1]] for i in preds_arg]
+    print(results)  # [['영', '웅', 'E'], ['파', '랑', 'E']]
+    print([''.join(i) for i in results])
     sess.close()
 
 
@@ -89,5 +107,5 @@ enc_inputs, dec_inputs, dec_target = make_batch(data, char2idx)
 print(enc_inputs.shape, dec_inputs.shape, dec_target.shape)
 # (6, 4, 30) (6, 3, 30) (6, 3)
 
-show_seq2seq(enc_inputs, dec_inputs, dec_target, vocab)
+show_seq2seq(enc_inputs, dec_inputs, dec_target, vocab, char2idx)
 
