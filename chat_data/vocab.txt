@@ -1,5 +1,5 @@
 _PAD_
-_STA_
+_SOS_
 _EOS_
 _UNK_
 가
