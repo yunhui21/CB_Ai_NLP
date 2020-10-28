@@ -170,6 +170,7 @@ data = [('food', '음식'), ('wood', '나무'),
         ('blue', '파랑'), ('lamp', '전구'),
         ('wind', '바람'), ('hero', '영웅')]
 
+
 vocab, char2idx = make_vocab_and_index(data)
 enc_inputs, dec_inputs, dec_target = make_batch(data, char2idx)
 print(enc_inputs.shape, dec_inputs.shape, dec_target.shape)
