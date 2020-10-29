@@ -110,37 +110,25 @@ def convert_to_sentence(sent, vocab, is_question):
 
     # sent = preds_arg[1]
     sent = list(sent)
+    # print(sent)
 
     # 문제
     # numpy
+    if is_question:
+        pos = sent.index(_EOS_) if _EOS_ in sent else len(sent)
+    else:
+        pos = sent.index(_EOS_)
+
     pos = len(sent) if is_question else sent.index(_EOS_)
     # print(pos)
 
 
     # print([i for i in sent[:pos]])
     # print([vocab[i] for i in sent[:pos]])
-    result = ''.join(vocab[i] for i in sent[:pos])
+    result = ' '.join(vocab[i] for i in sent[:pos])
     result = result.replace(vocab[_PAD_], '')
 
     print('왕자:' if is_question else '여우:', result )
-
-def act_like_writer(sent, model, word2idx, idx2word, seq_length=25):
-    current = sent.split()
-
-    for i in range(100):
-        tokens = current[-seq_length:]
-        token_idx = [word2idx[w] if w in word2idx else word2idx['UNK'] for w in tokens]
-
-        token_pad = tf.keras.preprocessing.sequence.pad_sequences(
-            [token_idx], maxlen=seq_length, padding='pre', value=word2idx['UNK']
-        )
-        output_arg = model.predict_classes(token_pad)
-        # print(output_arg)         # [3326]
-
-        output_arg = output_arg[0]
-        current.append(idx2word[output_arg])
-
-    print(current)
 
 
 def talk_to_bot(data_folder, model_folder):
@@ -149,27 +137,44 @@ def talk_to_bot(data_folder, model_folder):
 
     max_len_enc = max([len(s) for s in vectors[::2]])
     max_len_dec = max([len(s) for s in vectors[1::2]]) + 1  # +1 은 tag
-    print(max_len_enc, max_len_dec)  # 9 9
+    # print(max_len_enc, max_len_dec)  # 9 9
 
     onehots = np.eye(len(vocab), dtype=np.float32)
 
     model = tf.keras.models.load_model('{}/chat.h5'.format(model_folder))
 
     while type:
-        # sys.stdout.write('왕자:')
-        # sys.stdout.flush()
-        # line = sys.stdin.readline()
-        # if '끝' in line:
-        #     break
+        sys.stdout.write('왕자:')
+        sys.stdout.flush()
+        line = sys.stdin.readline()
+        if '끝' in line:
+            break
 
-        line = '이리 와서 나하고 놀자'
+        # line = '이리 와서 나하고 놀자'
 
         # 문제
         # 입력받은 문자열을 사용해서 결과를 예측하세요.
-        writer('동헌에 나가 활을 쏘다', model, word2idx, idx2word, seq_length)
+        # tokens = line.split()
+        tokens = nltk.regexp_tokenize(line, '\w+')
+        # print(tokens)
 
+        question = [vocab.index(t) if t in vocab else _UNK_ for t in tokens]
 
-        break
+        enc_in = add_pad(question, max_len_enc)
+        dec_in = add_pad([_SOS_], max_len_dec)
+
+        enc_inputs = np.int32([onehots[enc_in]])
+        dec_inputs = np.int32([onehots[dec_in]])
+
+        preds = model.predict([enc_inputs, dec_inputs])
+        preds_arg = np.argmax(preds, axis=2)
+
+        equale = np.where(preds_arg[0] == _EOS_)
+        # print(equale)
+        # print(equale[0])
+        convert_to_sentence(preds_arg[0], vocab, is_question=False)
+
+        # break
 enc_inputs, dec_inputs, dec_target, vocab = load_dataset('chat_data')
 
 # train_and_save(enc_inputs, dec_inputs, dec_target, len(vocab), 'chat_model')
