@@ -132,12 +132,12 @@ def model_chosun():
 
 def load_chosun():
 
-    tokens, vacab = get_data()
+    tokens, vocab = get_data()
 
     word2idx = {w: i for i, w in enumerate(vocab)}
     idx2word = np.array(vocab)
 
-    model = tf.keras.models.load_model('data/chousun.100.h5')
+    model = tf.keras.models.load_model('data/chousun_100.h5')
     act_like_writer('동현에 나가 활을 쏘다.', model, word2idx, idx2word, seq_length=25)
 
 # model_chosun()
