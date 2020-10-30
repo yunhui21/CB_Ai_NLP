@@ -12,7 +12,7 @@ def build_model(input_dims):
     inputs = tf.keras.layers.Input([input_dims])
     att_prob = tf.keras.layers.Dense(input_dims, activation='softmax')(inputs)
 
-    att_mul = tf.keras.layers.multiply([inputs, att_prob])
+    att_mul = tf.keras.layers.multiply([inputs, att_prob]) # att_prob : 1,1,1,1
 
     dense_mul = tf.keras.layers.Dense(64)(att_mul)
     outputs = tf.keras.layers.Dense(1, activation='sigmoid')(dense_mul)
