@@ -16,7 +16,7 @@ from matplotlib import colors
 print(nltk.corpus.gutenberg.fileids())
 hamlet = nltk.corpus.gutenberg.words('shakespeare-hamlet.txt')
 hamlet = [w.lower() for w in hamlet]
-
+print(hamlet)
 # 2. 등장 인물의 영어 이름 찾기
 actors = ['hamlet', 'claudius', 'gertrude', 'polonius', 'ophelia', 'horatio', 'laertes']
 print([w in hamlet for w in actors])
@@ -30,5 +30,5 @@ print(freq_actors)
 
 # 4. 그래프 출력
 plt.bar(actors, freq_actors, color=colors.TABLEAU_COLORS)
-# plt.barh(actors, freq_actors, color=colors.TABLEAU_COLORS)
+# plt.bar(actors, freq_actors, color=colors.TABLEAU_COLORS)
 plt.show()

@@ -1,37 +1,39 @@
-# Day_01_02_nltk.py
-import nltk         # natural language tool kit
+import nltk
 import string
 
+# nltk.download('gutenberg')
+# nltk.download('stopwords')
+# nltk.download('webtest')
+# nltk.download('wordnet')
+# nltk.download('reuters')
+# nltk.download('averaged_percenptron_tagger')
+# nltk.download('punkt')
 
-def datasets():
+def dataset():
     nltk.download('gutenberg')
     nltk.download('stopwords')
-    nltk.download('webtext')
+    nltk.download('webtest')
     nltk.download('wordnet')
     nltk.download('reuters')
-    nltk.download('averaged_perceptron_tagger')
+    nltk.download('averaged_percenptron_tagger')
     nltk.download('punkt')
 
-    # nltk.download()
-
-
 def corpus():
+
     print(nltk.corpus.gutenberg)
 
     print(nltk.corpus.gutenberg.fileids())
-    # ['austen-emma.txt', 'austen-persuasion.txt', ...]
 
     print(nltk.corpus.gutenberg)
 
     emma = nltk.corpus.gutenberg.raw('austen-emma.txt')
     print(emma)
-    print(type(emma))       # <class 'str'>
+    print(type(emma))
 
     print(nltk.corpus.gutenberg.words())
 
-
 def tokenize():
-    text = nltk.corpus.gutenberg.raw('austen-emma.txt')
+    text = nltk.corpus.gutenberg.rawo('austen-emma.txt')
     text = text[:1000]
     print(text)
 
@@ -40,17 +42,17 @@ def tokenize():
 
     for sent in nltk.tokenize.sent_tokenize(text):
         print(sent)
-        print('----------')
+        print('------------------')
 
     print(nltk.tokenize.RegexpTokenizer(r'[a-zA-Z]+').tokenize(text))
     print(nltk.tokenize.RegexpTokenizer(r'\w+').tokenize(text))
 
-    print(nltk.tokenize.WordPunctTokenizer().tokenize(text))
+    print(nltk.tokenize.WordPuntTokenizer().tokenize(text))
 
+#어간추출
 
-# 어간 추출
-def stemming():
-    words = ['lives', 'dies', 'flies', 'died']
+def setemming():
+    words = ['lives', 'dies', 'files', 'died']
 
     st = nltk.stem.PorterStemmer()
     print(st.stem('lives'))
@@ -59,25 +61,10 @@ def stemming():
     st = nltk.stem.LancasterStemmer()
     print([st.stem(w) for w in words])
 
-
 def grams():
-    text = 'John works at Intel'
+    text = 'Jonh works at Intel'
     tokens = nltk.word_tokenize(text)
 
     print(tokens)
     print(list(nltk.bigrams(tokens)))
-    print(list(nltk.trigrams(tokens)))
-
-
-# datasets()
-# corpus()
-# tokenize()
-# stemming()
-grams()
-
-# applekoong@naver.com 김정훈
-
-
-
-
-
+    print(list(nltk.tigrams(tokens)))

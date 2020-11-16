@@ -52,7 +52,7 @@ def load_dataset(data_folder):
     enc_inputs, dec_inputs, dec_target = [], [], []
     for i in range(0, len(vectors), 2):
         question, answer = vectors[i], vectors[i+1]
-        print() # 9
+        # print() # 9
         # 문제
         # dec_in과 target 코드를 만드세요
         enc_in = add_pad(question, max_len_enc)
@@ -179,5 +179,5 @@ enc_inputs, dec_inputs, dec_target, vocab = load_dataset('chat_data')
 
 # train_and_save(enc_inputs, dec_inputs, dec_target, len(vocab), 'chat_model')
 # load_and_predict(enc_inputs, dec_inputs, dec_target, vocab, 'chat_model')
-talk_to_bot('chat_data', 'chat_model')
+# talk_to_bot('chat_data', 'chat_model')
 

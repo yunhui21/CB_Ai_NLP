@@ -7,7 +7,7 @@ import numpy as np
 #alt+4
 
 #문제_01
-#문자열 리스트에서 가장 긴 문자열의 긴 문자열의 길이를 구하세요
+#문자열 기스트에서 가장 긴 문자열의 긴 문자열의 길이를 구하세요
 #(컴프리헨션) 사용 list내표
 a = ['Guest', 'Detroit', 'Woodlawn', 'Cemetary', 'People']
 for i in a:
@@ -16,7 +16,9 @@ for i in a:
 print([len(i) for i in a])
 print(max([len(i) for i in a]))
 
-
+a = ['Guest', 'Detroit', 'Woodlawn','Demetrary','People']
+for i in a :
+    print(len(a))
 #문제_02
 #100보다 작은 난수 10개를 갖는 리스트를 만드세요
 # numbers=[]
@@ -71,9 +73,9 @@ print([e for array in letters for e in array])
 t= [[random.randrange(6)] for j in range(4)]
 print(*t, sep='\n')
 print([[j for j in i if j % 2] for i in t])
-print([sum[[j for j in i if j % 2]] for i in t])
-print(max([sum[[j for j in i if j % 2]] for i in t]))
-print(np.argmax([sum[[j for j in i if j % 2]] for i in t]))
+print([sum[[j for j in i if j % 2] for i in t])
+print(max([sum[[j for j in i if j % 2] for i in t]))
+print(np.argmax([sum[[j for j in i if j % 2] for i in t]))
 
 
 
